@@ -1,0 +1,81 @@
+/*Inicio diseño login.html*/
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html{
+  scroll-behavior: smooth;
+}
+
+body{
+  background-image: url(images/fondo_login.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-family: "Gill Sans Extrabold", Helvetica, sans-serif
+}
+
+.header_logo{
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.logo{
+  height: 350px;
+}
+
+.login{
+  height: calc(100vh - 350px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card_login{
+  display: flex;
+  flex-direction: column;
+  background-color: #FF5400;
+  min-width: 320px;
+  border-radius: 8px;
+  padding: 20px;
+  height: 200px;
+  margin-bottom: 240px;
+}
+
+.form_control{
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.form_control--row{
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  font-size: small;
+}
+
+.form_input{
+  width: 100%;
+  font-size: medium;
+  padding: 10px;
+  gap: 1rem;
+  border-radius: 8px;
+  color: #FF5400;
+  border: none;
+}
+
+.form_button{
+  font-size: medium;
+  width: 100%;
+  padding: 10px;
+  gap: 1rem;
+  border-radius: 8px;
+  border: none;
+  color: #FF5400;
+  margin-top: 25px;
+}

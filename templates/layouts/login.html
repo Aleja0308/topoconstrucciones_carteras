@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Topoconstrucciones</title>
+  <link rel="icon" href="{% static "images/topo_logo.png" %}" type="image/x-icon">
+  <link rel="stylesheet" href="{% static "styles_login.css" %}">
+</head>
+
+<body>
+  <header>
+
+    <div class="header_logo">
+      <a href="login.html">
+        <img src="{% static "images/topo_blanco_logo.png" %}" class="logo" alt="logo">
+      </a>
+    </div>
+
+  </header>
+
+  <section class="login">
+
+    <div class="card_login">
+      <form action="{% url "login" %}" method="post">
+        {% csrf_token %}
+        <div class="container_ingreso">
+          <div>
+            <label for="username" class="form_control"></label>
+            <input class="form_input" type="text" id="username" name="username" placeholder="Usuario" required>
+          </div>
+
+          <div>
+            <label for="password" class="form_control"></label>
+            <input class="form_input" type="password" id="" name="password" placeholder="Contraseña" required>
+          </div>
+
+          <div>
+            <button class="form_button" type="submit">Iniciar sesión</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+  </section>
+
+</body>
+
+</html>
