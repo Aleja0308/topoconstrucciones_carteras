@@ -4,5 +4,10 @@ from . import views
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('login', auth_views.LoginView.as_view(template_name = 'layouts/login.html'), name="login"),
+    path('login/', auth_views.LoginView.as_view(template_name='layouts/login.html'), name="login"),
+    path('nivelacion/', views.crear_nivelacion, name='nivelacion'),
+    path('editar_nivelacion/<int:nivelacion_id>/', views.editar_nivelacion, name='editar_nivelacion'),
+    path('ver_nivelacion/<int:nivelacion_id>/', views.ver_nivelacion, name='ver_nivelacion'),
+    path('eliminar_nivelacion/<int:nivelacion_id>/', views.eliminar_nivelacion, name='eliminar_nivelacion'),
+    path('editar_punto_nivelacion/<int:nivelacion_id>/<int:punto_id>/', views.editar_punto_nivelacion, name='editar_punto_nivelacion'),
 ]

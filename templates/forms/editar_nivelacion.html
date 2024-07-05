@@ -1,0 +1,53 @@
+<!-- editar_tabla.html -->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Tabla de Nivelación - {{ tabla.nombre }}</title>
+</head>
+
+<body>
+  <h1>Editar Tabla de Nivelación - {{ tabla.nombre }}</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <!-- Mostrar campos adicionales según el tipo de punto -->
+    {% if form.instance.tipo == 'cambio' %}
+    <label for="id_vista_menos">Vista (-):</label>
+    <input type="number" id="id_vista_menos" name="vista_menos" step="0.01">
+    {% endif %}
+
+    <button type="submit">Agregar Punto</button>
+  </form>
+
+  <hr>
+
+  <h2>Puntos:</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Vista (+)</th>
+        <th>Vista (-)</th>
+        <th>Cota</th>
+        <th>Altura Instrumental</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for punto in tabla.puntos.all %}
+      <tr>
+        <td>{{ punto.tipo }}</td>
+        <td>{{ punto.vista_mas }}</td>
+        <td>{{ punto.vista_menos }}</td>
+        <td>{{ punto.cota }}</td>
+        <td>{{ punto.altura_instrumental }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+
+</html>

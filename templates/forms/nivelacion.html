@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cartera de nivelación</title>
+  <link rel="stylesheet" href="{% static 'styles_inicio.css' %}">
+</head>
+
+<body>
+  <div class="container">
+    <h2>Registrar cartera de nivelación</h2>
+
+    <form action="{% url 'crear_nivelacion' nivelacion_id %}" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn">Guardar</button>
+    </form>
+  </div>
+</body>
+
+</html>
