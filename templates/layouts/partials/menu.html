@@ -7,7 +7,11 @@
   </div>
 
   <div class="button">
-    <a href="{% url 'logout_session' %}" class="button_salir">SALIR</a>
+    {% if user.is_authenticated %}
+    <div>
+      <a href="{% url 'logout' %}">Cerrar sesión</a>
+    </div>
+    {% endif %}
   </div>
 
 </header>
@@ -15,7 +19,6 @@
 <div class="menu">
   <nav>
     <a href="{% url 'index' %}" class="nav_menu">INICIO</a>
-    <a href="{% url '' %}" class="nav_menu">REGISTRO</a>
-    <a href="{% url '' %}" class="nav_menu"></a>
+    <a href="{% url 'nivelacion' %}" class="nav_menu">REGISTRO</a>
   </nav>
 </div>

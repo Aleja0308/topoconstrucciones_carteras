@@ -84,6 +84,18 @@ DATABASES = {
     }
 }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'topo_cartera',
+        'USER': 'topo_cartera',
+        'PASSWORD': 'YES',
+        'HOST': 'localhost',  # Puede ser una dirección IP o un nombre de host
+        'PORT': '3306',
+    }
+}
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -132,3 +144,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #Cors authorization
 CORS_ALLOWED_ORIGINS = []
+
+LOGOUT_REDIRECT_URL = 'login'
+LOGIN_REDIRECT_URL = 'ver_nivelacion'
+LOGIN_URL = 'login'
