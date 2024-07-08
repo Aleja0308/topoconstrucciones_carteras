@@ -1,8 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from .models import TablaNivelacion, Punto
-from .forms import PuntoForm
+from .models import Basica
+from .models import TipoPunto
+from .models import CarteraNivelacion
+from .models import BasicaForm
+from .models import TipoPuntoForm
+from .models import CarteraNivelacionForm
 
 # Create your views here.
 
@@ -12,7 +16,7 @@ def login(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
     
-    #Autenticar al usuario utilizando el nombre del usuario y el documento de identidad:
+#Autenticar al usuario utilizando el nombre del usuario y el documento de identidad:
     user = authenticate(request, username=username, password=password)
     if user is not None:
       login(request, user)
@@ -20,76 +24,95 @@ def login(request):
     else:
       return redirect('login')
   else:
-    return render(request, 'layouts/login.html', {})
+    return render(request, 'templates/layouts/partials/login.html', {})
 
-#INDEX:  
+#INDEX:
+@login_required
 def index(request):
   return render(request, 'layouts/index.html', {})
 
-#FUNCIÓN PARA CREAR UNA CARTERA:
+#Se define la vista de TipoPunto:
+#CREATE:
 @login_required
-def crear_nivelacion(request):
+def add_tipo(request):
   if request.method == 'POST':
-    nombre = request.POST.get('nombre')
-    nivelacion = TablaNivelacion.objects.create(nombre=nombre)
-    return redirect('editar_nivelacion', nivelacion_id=nivelacion.id)
-  return render(request, 'forms/nivelacion.html')
+    form = TipoPuntoForm(request.POST)
+    if form.is_valid():
+      tipo_punto = form.save()
+      return render(request, 'options/tipo_punto.html', {'tipo_punto': tipo_punto})
+  else:
+    form = TipoPuntoForm()
+    return render(request, 'options/tipo_punto.html', {'form': form})
 
-#FUNCIÓN PARA EDITAR LA CARTERA:
+#Se define la vista de BasicaForm:
+#CREATE:
 @login_required
-def editar_nivelacion(request, nivelacion_id):
-    nivelacion = get_object_or_404(TablaNivelacion, id=nivelacion_id)
+def add_basica(request):
     if request.method == 'POST':
-        form = PuntoForm(request.POST)
+        form = BasicaForm(request.POST)
         if form.is_valid():
-            punto = form.save(commit=False)
-            punto.tabla = nivelacion  # Cambiado de nivelacion a tabla
-            # Calcula la cota y la altura instrumental
-            if punto.tipo == 'delta':
-                punto.cota = punto.vista_mas
-                punto.altura_instrumental = punto.cota + punto.vista_mas
-            elif punto.tipo == 'cambio':
-                ultimo_punto = nivelacion.puntos.last()
-                if ultimo_punto:
-                    punto.cota = ultimo_punto.cota - punto.vista_menos
-                    punto.altura_instrumental = punto.cota + punto.vista_mas
-            punto.save()
-            return redirect('editar_nivelacion', nivelacion_id=nivelacion.id)
+          basica_instance = form.save(commit=False)
+          basica_instance.save()
+        return redirect('add_cartera', basica_id = basica_instance.id)
     else:
-        form = PuntoForm()
-    return render(request, 'forms/editar_nivelacion.html', {'nivelacion': nivelacion, 'form': form})
+        form = BasicaForm() #Se crea un formulario vacío para solicitudes GET
+    return render(request, 'forms/basica.html', {'form': form})
 
-
-#FUNCIÓN PARA VISUALIZAR UN PUNTO:
+#READ ver_inicio:
 @login_required
-def ver_nivelacion(request, nivelacion_id):
-  nivelacion = get_object_or_404(TablaNivelacion, id=nivelacion_id)
-  return render(request, 'forms/ver_nivelacion.html', {'nivelacion': nivelacion})
+def ver_inicio(request):
+    basicas = Basica.objects.all()
+    return render(request, 'ver_inicio.html', {'basicas': basicas})
 
-#FUNCIÓN PARA ELIMINAR UN PUNTO:
+#READ ver_basica:
 @login_required
-def eliminar_nivelacion(request, nivelacion_id):
-  nivelacion = get_object_or_404(TablaNivelacion, id=nivelacion_id)
-  nivelacion.delete()
-  return render('listar_tablas')
+def ver_basica(request):
+    basicas = Basica.objects.all()
+    return render(request, 'ver_basica.html', {'basicas': basicas})
 
-#FUNCIÓN PARA EDITAR UN PUNTO:
+#UPDATE:
 @login_required
-def editar_punto_nivelacion(request, nivelacion_id, punto_id):
-    nivelacion = get_object_or_404(TablaNivelacion, id=nivelacion_id)
-    punto = get_object_or_404(Punto, id=punto_id)
-    
+def editar_basica(request, pk):
+    basica = get_object_or_404(Basica, pk=pk)
     if request.method == 'POST':
-        form = PuntoForm(request.POST, instance=punto)
+        form = BasicaForm(request.POST, instance=basica)
         if form.is_valid():
-            punto = form.save(commit=False)
-            # Realiza los cálculos necesarios según el tipo de punto si se actualizan las vistas
-            punto.save()
-            return redirect('editar_nivelacion', nivelacion_id=nivelacion_id)
+            form.save()
+            return redirect('editar_medica')
     else:
-        form = PuntoForm(instance=punto)
-    
-    return render(request, 'forms/editar_punto_nivelacion.html', {'nivelacion': nivelacion, 'form': form, 'punto': punto})
+        form = BasicaForm(instance=basica)
+    return render(request, 'forms/editar_basica.html', {'form': form, 'basica': basica})
+
+#DELETE:
+@login_required
+def eliminar_basica(request, pk):
+    basica = get_object_or_404(Basica, pk=pk)
+    if request.method == 'POST':
+        basica.delete()
+        return redirect('ver_basica')
+    return render(request, 'forms/eliminar_basica.html', {'basica': basica})
+
+#Se define la vista de CarteraNivelacionForm:
+#CREATE:
+@login_required
+def add_cartera(request, basica_id=None):
+    basica_instance = Basica.objects.get(pk=basica_id)
+    if request.method == 'POST':
+        form = CarteraNivelacionForm(request.POST)
+        if form.is_valid():
+          cartera_instance = form.save(commit=False)
+          cartera_instance.basica = basica_instance
+          cartera_instance.save()
+        return redirect('ver_inicio')
+    else:
+        form = CarteraNivelacionForm()  #Se crea un formulario vacío para solicitudes GET
+    return render(request, 'forms/cartera.html', {'form': form, 'basica_id': basica_id})
+
+#READ:
+@login_required
+def ver_cartera(request):
+    carteras = CarteraNivelacion.objects.all()
+    return render(request, 'ver_cartera.html', {'carteras': carteras})
 
 #LOGOUT:
 def logout_session(request):
