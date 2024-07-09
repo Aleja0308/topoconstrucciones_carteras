@@ -89,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'topo_cartera',
         'USER': 'topo_cartera',
-        'PASSWORD': 'YES',
+        'PASSWORD': 'topo_cartera',
         'HOST': 'localhost',  # Puede ser una dirección IP o un nombre de host
         'PORT': '3306',
     }

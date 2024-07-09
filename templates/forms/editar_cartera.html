@@ -1,0 +1,27 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tpoconstrucciones</title>
+</head>
+
+<body>
+
+  <form action="{% url 'editar_cartera' cartera.pk %}" method="post">
+
+    {% csrf_token %}
+
+    {{ form.as_div }}
+
+    <button type="submit">Guardar cambios</button>
+
+  </form>
+
+</body>
+
+</html>

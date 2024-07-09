@@ -7,8 +7,8 @@ from .models import CarteraNivelacion
 class TipoPuntoForm(forms.ModelForm):
   class Meta:
     model = TipoPunto
-    fields = ['tipo']
-    widgets = {'tipo': forms.Select(attrs={'class': ''})}
+    fields = ['tipo_punto']
+    widgets = {'tipo_punto': forms.Select(attrs={'class': ''})}
     
 #Se define el formulario para Basica:
 class BasicaForm(forms.ModelForm):

@@ -1,0 +1,38 @@
+{% extends "layouts/index.html" %}
+
+{% block content %}
+
+{% for basica in basicas %}
+
+<div class="card">
+  <div class="card-body">
+    <div class="info-item">
+      <span class="info-label">Nombre:</span>
+      <span class="info-value">{{ basica.nombre }}</span>
+    </div>
+
+    <div class="info-item">
+      <span class="info-label">Ciudad:</span>
+      <span class="info-value">{{ basica.ciudad }}</span>
+    </div>
+
+    <div class="info-item">
+      <span class="info-label">Lugar:</span>
+      <span class="info-value">{{ basica.lugar }}</span>
+    </div>
+
+    <div class="info-item">
+      <span class="info-label">Responsable:</span>
+      <span class="info-value">{{ basica.responsable }}</span>
+    </div>
+
+    <div class="info-item">
+      <span class="info-label">Fecha:</span>
+      <span class="info-value">{{ basica.fecha }}</span>
+    </div>
+  </div>
+</div>
+
+{% endfor %}
+
+{% endblock %}

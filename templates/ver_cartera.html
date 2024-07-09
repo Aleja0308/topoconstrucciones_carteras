@@ -1,0 +1,43 @@
+{% extends "layouts/index.html" %}
+
+{% block content %}
+
+{% for cartera in carteras %}
+
+<table>
+  <tr>
+    <th>Punto</th>
+    <td>{{ cartera.punto }}</td>
+  </tr>
+
+  <tr>
+    <th>Vista (+)</th>
+    <td>{{ cartera.vista_mas }}</td>
+  </tr>
+
+  <tr>
+    <th>Altura Instrumental</th>
+    <td>{{ cartera.altura_instrumental }}</td>
+  </tr>
+
+  <tr>
+    <th>Vista (-)</th>
+    <td>{{ cartera.vista_menos }}</td>
+  </tr>
+
+  <tr>
+    <th>Cota</th>
+    <td>{{ cartera.cota }}</td>
+  </tr>
+
+
+
+  {% comment %}
+
+  {% endcomment %}
+
+</table>
+
+{% endfor %}
+
+{% endblock %}
