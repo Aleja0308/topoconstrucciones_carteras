@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from .models import Basica, CarteraNivelacion
+from .models import Basica, CarteraNivelacion, TipoPunto
 from .forms import BasicaForm, TipoPuntoForm, CarteraNivelacionForm
 
-#LOGIN:
+""" #LOGIN:
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -18,15 +18,15 @@ def login_view(request):
         else:
             return redirect('login')
     else:
-        return render(request, 'layouts/partials/login.html', {})
+        return render(request, 'layouts/partials/login.html', {}) """
 
 #INDEX:
-@login_required
+#@login_required
 def index(request):
     return render(request, 'layouts/index.html', {})
 
 #CREATE TipoPunto:
-@login_required
+#@login_required
 def add_tipo(request):
     if request.method == 'POST':
         form = TipoPuntoForm(request.POST)
@@ -38,7 +38,7 @@ def add_tipo(request):
     return render(request, 'options/tipo_punto.html', {'form': form})
 
 #CREATE Basica:
-@login_required
+#@login_required
 def add_basica(request):
     if request.method == 'POST':
         form = BasicaForm(request.POST)
@@ -51,19 +51,25 @@ def add_basica(request):
     return render(request, 'forms/basica.html', {'form': form})
 
 #READ ver_inicio:
-@login_required
+#@login_required
 def ver_inicio(request):
-    basicas = Basica.objects.all()
-    return render(request, 'ver_inicio.html', {'basicas': basicas})
+    try:
+        basicas = Basica.objects.all()
+        carteras = CarteraNivelacion.objects.all()
+    except Basica.DoesNotExist:
+        basicas = []
+    except CarteraNivelacion.DoesNotExist:
+        carteras = []
+    return render(request, 'ver_inicio.html', {'basicas': basicas, 'carteras': carteras})
 
 #READ ver_basica:
-@login_required
+#@login_required
 def ver_basica(request):
     basicas = Basica.objects.all()
     return render(request, 'ver_basica.html', {'basicas': basicas})
 
 #UPDATE editar_basica:
-@login_required
+#@login_required
 def editar_basica(request, pk):
     basica = get_object_or_404(Basica, pk=pk)
     if request.method == 'POST':
@@ -76,7 +82,7 @@ def editar_basica(request, pk):
     return render(request, 'forms/editar_basica.html', {'form': form, 'basica': basica})
 
 #DELETE eliminar_basica:
-@login_required
+#@login_required
 def eliminar_basica(request, pk):
     basica = get_object_or_404(Basica, pk=pk)
     if request.method == 'POST':
@@ -85,7 +91,7 @@ def eliminar_basica(request, pk):
     return render(request, 'forms/eliminar_basica.html', {'basica': basica})
 
 #CREATE CarteraNivelacion:
-@login_required
+#@login_required
 def add_cartera(request, basica_id=None):
     basica_instance = Basica.objects.get(pk=basica_id)
     if request.method == 'POST':
@@ -100,13 +106,13 @@ def add_cartera(request, basica_id=None):
     return render(request, 'forms/cartera.html', {'form': form, 'basica_id': basica_id})
 
 #READ ver_cartera:
-@login_required
+#@login_required
 def ver_cartera(request):
     carteras = CarteraNivelacion.objects.all()
     return render(request, 'ver_cartera.html', {'carteras': carteras})
 
 #UPDATE editar_cartera:
-@login_required
+#@login_required
 def editar_cartera(request, pk):
     cartera = get_object_or_404(CarteraNivelacion, pk=pk)
     if request.method == 'POST':
@@ -119,7 +125,7 @@ def editar_cartera(request, pk):
     return render(request, 'forms/editar_cartera.html', {'form': form, 'cartera': cartera})
 
 #DELETE editar_cartera:
-@login_required
+#@login_required
 def eliminar_cartera(request, pk):
     cartera = get_object_or_404(CarteraNivelacion, pk=pk)
     if request.method == 'POST':

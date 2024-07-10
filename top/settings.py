@@ -84,19 +84,6 @@ DATABASES = {
     }
 }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'topo_cartera',
-        'USER': 'topo_cartera',
-        'PASSWORD': 'topo_cartera',
-        'HOST': 'localhost',  # Puede ser una dirección IP o un nombre de host
-        'PORT': '3306',
-    }
-}
-
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
