@@ -2,80 +2,60 @@
 
 {% block content %}
 
-{% for basica in basicas %}
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Ciudad</th>
+      <th>Lugar</th>
+      <th>Responsable</th>
+      <th>Fecha</th>
+    </tr>
+  </thead>
 
-<div class="card">
-
-  <div class="card-body">
-
-    <div class="info-item">
-      <span class="info-label">Nombre:</span>
-      <span class="info-value">{{ basica.nombre }}</span>
-    </div>
-
-    <div class="info-item">
-      <span class="info-label">Ciudad:</span>
-      <span class="info-value">{{ basica.ciudad }}</span>
-    </div>
-
-    <div class="info-item">
-      <span class="info-label">Lugar:</span>
-      <span class="info-value">{{ basica.lugar }}</span>
-    </div>
-
-    <div class="info-item">
-      <span class="info-label">Responsable:</span>
-      <span class="info-value">{{ basica.responsable }}</span>
-    </div>
-
-    <div class="info-item">
-      <span class="info-label">Fecha:</span>
-      <span class="info-value">{{ basica.fecha }}</span>
-    </div>
-
-    {% for cartera in basica.carteras.all %}
-
-    <div class="info-item">
-      <span class="info-label">Tipo Punto:</span>
-      <span class="info-value">{{ cartera.tipo_punto }}</span>
-    </div>
-
-    <div class="info-item">
-      <span class="info-label">Punto:</span>
-      <span class="info-value">{{ cartera.punto }}</span>
-    </div>
-
-    <div class="info-item">
-      <span class="info-label">Vista (+):</span>
-      <span class="info-value">{{ cartera.vista_mas }}</span>
-    </div>
-
-    <div class="info-item">
-      <span class="info-label">Altura Instrumental:</span>
-      <span class="info-value">{{ cartera.altura_instrumental }}</span>
-    </div>
-
-    <div class="info-item">
-      <span class="info-label">Vista (-):</span>
-      <span class="info-value">{{ cartera.vista_menos }}</span>
-    </div>
-
-    <div class="info-item">
-      <span class="info-label">Cota:</span>
-      <span class="info-value">{{ cartera.cota }}</span>
-    </div>
-
+  <tbody>
+    {% for basica in basicas %}
+    <tr>
+      <td>{{ basica.nombre }}</td>
+      <td>{{ basica.ciudad }}</td>
+      <td>{{ basica.lugar }}</td>
+      <td>{{ basica.responsable }}</td>
+      <td>{{ basica.fecha }}</td>
+      <td>
+        <button class="edit-button" onclick="window.location='{% url 'editar_basica' basica.pk %}';">Editar</button>
+        <button class="delete-button"
+          onclick="window.location='{% url 'eliminar_basica' basica.pk %}';">Eliminar</button>
+      </td>
+    </tr>
     {% endfor %}
 
-  </div>
+    <thead>
+      <tr>
+        <th>Tipo Punto</th>
+        <th>Punto</th>
+        <th>Vista (+)</th>
+        <th>Altura Instrumental</th>
+        <th>Vista (-)</th>
+        <th>Cota</th>
+      </tr>
+    </thead>
 
-  <div class="info-actions">
-    <button class="edit-button" onclick="window.location='{% url 'editar_basica' basica.pk %}';">Editar</button>
-    <button class="delete-button" onclick="window.location='{% url 'eliminar_basica' basica.pk %}';">Eliminar</button>
-  </div>
-
-</div>
-
-{% endfor %}
+    {% for cartera in carteras %}
+    <tr>
+      <td>{{ cartera.tipo_punto }}</td>
+      <td>{{ cartera.punto }}</td>
+      <td>{{ cartera.vista_mas }}</td>
+      <td>{{ cartera.altura_instrumental }}</td>
+      <td>{{ cartera.vista_menos }}</td>
+      <td>{{ cartera.cota }}</td>
+      <td>
+        <button class="edit-button" onclick="window.location='{% url 'editar_cartera' cartera.pk %}';">Editar</button>
+        <button class="delete-button"
+          onclick="window.location='{% url 'eliminar_cartera' cartera.pk %}';">Eliminar</button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 {% endblock %}

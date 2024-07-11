@@ -17,6 +17,7 @@
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit" class="btn">Guardar</button>
+      <button class="btn" onclick="window.location='{% url 'index' %}';">Cancelar</button>
     </form>
   </div>
 </body>

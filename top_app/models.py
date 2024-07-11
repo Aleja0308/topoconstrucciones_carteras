@@ -5,6 +5,7 @@ from django.db import models
 #Se define el modelo para TipoPunto:
 class TipoPunto(models.Model):
   ROLES_CHOICES = (
+    ('BM', 'BM'),
     ('delta', 'Delta'),
     ('cambio', 'Cambio'),
   )
@@ -14,7 +15,7 @@ class TipoPunto(models.Model):
     return self.tipo_punto
 
 #Se define el modelo para la información básica de la cartera:
-class Basica(models.Model):
+class InformacionBasica(models.Model):
   nombre = models.CharField(max_length=50)
   ciudad = models.CharField(max_length=50)
   lugar = models.CharField(max_length=50)
@@ -23,7 +24,7 @@ class Basica(models.Model):
 
 #Se define el modelo para la información numérica de la cartera:
 class CarteraNivelacion(models.Model):
-  basica = models.OneToOneField(Basica, on_delete= models.CASCADE, null=True)
+  basica = models.OneToOneField(InformacionBasica, on_delete= models.CASCADE, null=True)
   tipo_punto = models.ForeignKey(TipoPunto, on_delete= models.PROTECT, null=True)
   punto = models.CharField(max_length=20)
   vista_mas = models.FloatField(null=True, blank=True)

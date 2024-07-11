@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.forms import formset_factory
 from django.contrib.auth import login as auth_login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from .models import Basica, CarteraNivelacion, TipoPunto
+from .models import Basica, CarteraNivelacion
 from .forms import BasicaForm, TipoPuntoForm, CarteraNivelacionForm
+
+CarteraNivelacionFormSet = formset_factory(CarteraNivelacionForm, extra=1)
 
 """ #LOGIN:
 def login_view(request):
@@ -45,6 +48,7 @@ def add_basica(request):
         if form.is_valid():
             basica_instance = form.save(commit=False)
             basica_instance.save()
+            # Redirigir a la vista add_cartera con el ID de la basica_instance
             return redirect('add_cartera', basica_id=basica_instance.id)
     else:
         form = BasicaForm()
@@ -53,13 +57,8 @@ def add_basica(request):
 #READ ver_inicio:
 #@login_required
 def ver_inicio(request):
-    try:
-        basicas = Basica.objects.all()
-        carteras = CarteraNivelacion.objects.all()
-    except Basica.DoesNotExist:
-        basicas = []
-    except CarteraNivelacion.DoesNotExist:
-        carteras = []
+    basicas = Basica.objects.all()
+    carteras = CarteraNivelacion.objects.all()
     return render(request, 'ver_inicio.html', {'basicas': basicas, 'carteras': carteras})
 
 #READ ver_basica:
@@ -73,10 +72,10 @@ def ver_basica(request):
 def editar_basica(request, pk):
     basica = get_object_or_404(Basica, pk=pk)
     if request.method == 'POST':
-      form = BasicaForm(request.POST, instance=basica)
-      if form.is_valid():
-        form.save()
-        return redirect('editar_basica')
+        form = BasicaForm(request.POST, instance=basica)
+        if form.is_valid():
+            form.save()
+            return redirect('ver_basica')
     else:
         form = BasicaForm(instance=basica)
     return render(request, 'forms/editar_basica.html', {'form': form, 'basica': basica})
@@ -93,17 +92,20 @@ def eliminar_basica(request, pk):
 #CREATE CarteraNivelacion:
 #@login_required
 def add_cartera(request, basica_id=None):
-    basica_instance = Basica.objects.get(pk=basica_id)
+    basica_instance = get_object_or_404(Basica, pk=basica_id)
+    
     if request.method == 'POST':
-        form = CarteraNivelacionForm(request.POST)
-        if form.is_valid():
-            cartera_instance = form.save(commit=False)
-            cartera_instance.basica = basica_instance
-            cartera_instance.save()
+        formset = CarteraNivelacionFormSet(request.POST)
+        if formset.is_valid():
+            instances = formset.save(commit=False)
+            for instance in instances:
+                instance.basica = basica_instance
+                instance.save()
             return redirect('ver_inicio')
     else:
-        form = CarteraNivelacionForm()
-    return render(request, 'forms/cartera.html', {'form': form, 'basica_id': basica_id})
+        formset = CarteraNivelacionFormSet()
+    
+    return render(request, 'forms/cartera.html', {'formset': formset, 'basica_id': basica_id})
 
 #READ ver_cartera:
 #@login_required
@@ -116,10 +118,10 @@ def ver_cartera(request):
 def editar_cartera(request, pk):
     cartera = get_object_or_404(CarteraNivelacion, pk=pk)
     if request.method == 'POST':
-      form = CarteraNivelacionForm(request.POST, instance=cartera)
-      if form.is_valid():
-          form.save()
-          return redirect('ver_inicio')
+        form = CarteraNivelacionForm(request.POST, instance=cartera)
+        if form.is_valid():
+            form.save()
+            return redirect('ver_cartera')
     else:
         form = CarteraNivelacionForm(instance=cartera)
     return render(request, 'forms/editar_cartera.html', {'form': form, 'cartera': cartera})
@@ -131,7 +133,7 @@ def eliminar_cartera(request, pk):
     if request.method == 'POST':
         cartera.delete()
         return redirect('ver_cartera')
-    return render(request, 'forms/eliminar_cartera', {'cartera': cartera})
+    return render(request, 'forms/eliminar_cartera.html', {'cartera': cartera})
 
 #LOGOUT:
 def logout_session(request):
