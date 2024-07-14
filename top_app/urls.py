@@ -14,6 +14,5 @@ urlpatterns = [
     path('add_cartera/<int:basica_id>/', views.add_cartera, name='add_cartera'),
     path('editar_cartera/<int:pk>/', views.editar_cartera, name='editar_cartera'),
     path('eliminar_cartera/<int:pk>/', views.eliminar_cartera, name='eliminar_cartera'),
-    path('add_tipo/', views.add_tipo, name='add_tipo'),
     path('logout_session/', views.logout_session, name='logout_session'),
 ]

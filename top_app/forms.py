@@ -3,7 +3,7 @@ from .models import InformacionBasica
 from .models import CarteraNivelacion
  
 #Se define el formulario para Basica:
-class BasicaForm(forms.ModelForm):
+class InformacionBasicaForm(forms.ModelForm):
   class Meta:
     model = InformacionBasica
     fields = ['nombre', 'ciudad', 'lugar', 'responsable', 'fecha']
@@ -19,8 +19,9 @@ class BasicaForm(forms.ModelForm):
 class CarteraNivelacionForm(forms.ModelForm):
   class Meta:
     model = CarteraNivelacion
-    fields = ['cota_inicial', 'vista_mas_inicial', 'tipo_punto', 'punto', 'vista_mas', 'vista_menos', 'cota_calculada']
+    fields = ['bench_mark', 'cota_inicial', 'vista_mas_inicial', 'tipo_punto', 'punto', 'vista_mas', 'vista_menos', 'cota_calculada']
     widgets = {
+      'bench_mark': forms.NumberInput(attrs={'type':'number','class':''}),
       'cota_inicial': forms.NumberInput(attrs={'type':'number','class':''}),
       'vista_mas_inicial': forms.NumberInput(attrs={'type':'number','class':''}),
       'tipo_punto': forms.Select(attrs={'class':''}),

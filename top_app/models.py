@@ -16,6 +16,7 @@ class CarteraNivelacion(models.Model):
     ('delta', 'Delta'),
     ('cambio', 'Cambio'),
   )
+  bench_mark = models.FloatField(null = True, blank = True)
   cota_inicial = models.FloatField(null = True, blank = True)
   vista_mas_inicial = models.FloatField(null=True, blank=True)
   tipo_punto = models.CharField(max_length=20, choices=ROLES_CHOICES)
