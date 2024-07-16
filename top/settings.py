@@ -79,10 +79,15 @@ WSGI_APPLICATION = 'top.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'top',              # Nombre de la base de datos creada
+        'USER': 'root',    # Usuario de MySQL
+        'PASSWORD': 'aleja2001',# Contraseña de MySQL
+        'HOST': 'localhost',        # Host donde está corriendo MySQL
+        'PORT': '3306',             # Puerto de MySQL
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

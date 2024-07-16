@@ -16,15 +16,13 @@ class CarteraNivelacion(models.Model):
     ('delta', 'Delta'),
     ('cambio', 'Cambio'),
   )
-  bench_mark = models.FloatField(null = True, blank = True)
-  cota_inicial = models.FloatField(null = True, blank = True)
-  vista_mas_inicial = models.FloatField(null=True, blank=True)
   tipo_punto = models.CharField(max_length=20, choices=ROLES_CHOICES)
   punto = models.CharField(max_length=20)
+  altura_instrumental = models.FloatField(null = True, blank = True)
   vista_mas = models.FloatField(null=True, blank=True)
   vista_menos = models.FloatField(null=True, blank=True)
+  cota_inicial = models.FloatField(null = True, blank = True)
   cota_calculada = models.FloatField(null=True, blank=True)
-  altura_instrumental = models.FloatField(null = True, blank = True)
   basica = models.OneToOneField(InformacionBasica, on_delete= models.CASCADE, null=True)
 
   def __str__(self):

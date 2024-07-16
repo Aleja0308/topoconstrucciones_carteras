@@ -19,14 +19,12 @@ class InformacionBasicaForm(forms.ModelForm):
 class CarteraNivelacionForm(forms.ModelForm):
   class Meta:
     model = CarteraNivelacion
-    fields = ['bench_mark', 'cota_inicial', 'vista_mas_inicial', 'tipo_punto', 'punto', 'vista_mas', 'vista_menos', 'cota_calculada']
+    fields = ['tipo_punto', 'punto', 'vista_mas', 'vista_menos', 'cota_inicial', 'cota_calculada']
     widgets = {
-      'bench_mark': forms.NumberInput(attrs={'type':'number','class':''}),
-      'cota_inicial': forms.NumberInput(attrs={'type':'number','class':''}),
-      'vista_mas_inicial': forms.NumberInput(attrs={'type':'number','class':''}),
       'tipo_punto': forms.Select(attrs={'class':''}),
       'punto': forms.NumberInput(attrs={'type':'number','class':''}),
       'vista_mas': forms.NumberInput(attrs={'type':'number','class':''}),
       'vista_menos': forms.NumberInput(attrs={'type':'number','class':''}),
+      'cota_inicial': forms.NumberInput(attrs={'type':'number','class':''}),
       'cota_calculada': forms.NumberInput(attrs={'type':'number','class':''}),
 }
