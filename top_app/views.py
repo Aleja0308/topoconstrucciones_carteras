@@ -31,12 +31,12 @@ def add_basica(request):
     if request.method == 'POST':
         form = InformacionBasicaForm(request.POST)
         if form.is_valid():
-            basica_instance = form.save(commit=False)
-            basica_instance.save()
+            basica_instance = form.save()
             # Redirigir a la vista add_cartera con el ID de la basica_instance
-            return redirect('add_cartera', basica_id=basica_instance.id)
+            return redirect('add_cartera', basica_id=basica_instance.pk)  # Utiliza .pk en lugar de .id
     else:
         form = InformacionBasicaForm()
+    
     return render(request, 'forms/basica.html', {'form': form})
 
 #READ ver_inicio:
@@ -60,9 +60,10 @@ def editar_basica(request, pk):
         form = InformacionBasicaForm(request.POST, instance=basica)
         if form.is_valid():
             form.save()
-            return redirect('ver_basica')
+            return redirect('ver_basica')  # Redirigir a la vista 'ver_basica'
     else:
         form = InformacionBasicaForm(instance=basica)
+    
     return render(request, 'forms/editar_basica.html', {'form': form, 'basica': basica})
 
 #DELETE eliminar_basica:
@@ -71,7 +72,7 @@ def eliminar_basica(request, pk):
     basica = get_object_or_404(InformacionBasica, pk=pk)
     if request.method == 'POST':
         basica.delete()
-        return redirect('ver_basica')
+        return redirect('ver_basica')  # Redirigir a la vista 'ver_basica'
     return render(request, 'forms/eliminar_basica.html', {'basica': basica})
 
 #CREATE CarteraNivelacion:
@@ -80,15 +81,32 @@ def add_cartera(request, basica_id=None):
     basica_instance = get_object_or_404(InformacionBasica, pk=basica_id)
     
     if request.method == 'POST':
-        formset = CarteraNivelacionFormSet(request.POST)
+        formset = CarteraNivelacionForm(request.POST)
         if formset.is_valid():
             instances = formset.save(commit=False)
+            cota_inicial = basica_instance.cota_inicial
+            vista_mas = basica_instance.vista_mas
+            
             for instance in instances:
                 instance.basica = basica_instance
+                tipo_punto = instance.tipo_punto
+                altura_instrumental = vista_mas + cota_inicial
+    
+                if tipo_punto == 'Delta':
+                    vista_menos = instance.vista_menos
+                    instance.cota_calculada = altura_instrumental - vista_menos
+    
+                elif tipo_punto == 'Cambio':
+                    vista_mas = instance.vista_mas
+                    vista_menos = instance.vista_menos
+                    cota_calculada = altura_instrumental - vista_menos
+                    instance.altura_instrumental = cota_calculada + vista_mas
+    
                 instance.save()
-            return redirect('ver_inicio')
+    
+            return redirect('ver_inicio')  # Redirigir a la vista 'ver_inicio'
     else:
-        formset = CarteraNivelacionFormSet()
+        formset = CarteraNivelacionForm()
     
     return render(request, 'forms/cartera.html', {'formset': formset, 'basica_id': basica_id})
 
@@ -106,9 +124,10 @@ def editar_cartera(request, pk):
         form = CarteraNivelacionForm(request.POST, instance=cartera)
         if form.is_valid():
             form.save()
-            return redirect('ver_cartera')
+            return redirect('ver_cartera')  # Redirigir a la vista 'ver_cartera'
     else:
         form = CarteraNivelacionForm(instance=cartera)
+    
     return render(request, 'forms/editar_cartera.html', {'form': form, 'cartera': cartera})
 
 #DELETE editar_cartera:
@@ -117,7 +136,7 @@ def eliminar_cartera(request, pk):
     cartera = get_object_or_404(CarteraNivelacion, pk=pk)
     if request.method == 'POST':
         cartera.delete()
-        return redirect('ver_cartera')
+        return redirect('ver_cartera')  # Redirigir a la vista 'ver_cartera'
     return render(request, 'forms/eliminar_cartera.html', {'cartera': cartera})
 
 #LOGOUT:
