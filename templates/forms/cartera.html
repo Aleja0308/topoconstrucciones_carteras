@@ -1,24 +1,23 @@
-{% load static %}
+</html>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Datos de la cartera</title>
-  <link rel="stylesheet" href="{% static '' %}">
+  <title>Añadir Datos Cartera</title>
+  <!-- Agrega aquí tus archivos CSS si es necesario -->
 </head>
 
 <body>
-  <div class="container">
-    <h2>Registrar datos de la cartera:</h2>
-
-    <form action="{% url 'add_cartera' basica_id=basica_id %}" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="btn">Guardar</button>
-    </form>
-  </div>
+  <h1>Añadir Datos Cartera</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ formset.as_p }}
+    <button type="submit">Guardar</button>
+  </form>
+  <button class="delete-button" onclick="window.location='{% url 'index' %}';">Volver</button>
 </body>
 
 </html>

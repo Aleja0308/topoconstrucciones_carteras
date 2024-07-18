@@ -7,20 +7,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tpoconstrucciones</title>
+  <title>Topoconstrucciones</title>
 </head>
 
 <body>
 
-  <form action="{% url 'editar_cartera' cartera.pk %}" method="post">
+  <div class="form__update">
 
-    {% csrf_token %}
+    <form action="{% url 'editar_cartera' cartera.pk %}" method="post">
 
-    {{ form.as_div }}
+      {% csrf_token %}
 
-    <button type="submit">Guardar cambios</button>
+      {{ form.as_div }}
 
-  </form>
+      <button type="submit">Guardar cambios</button>
+
+    </form>
+
+    <button class="delete-button" onclick="window.location='{% url 'ver_inicio' basica.pk %}';">Cancelar</button>
+
+  </div>
 
 </body>
 

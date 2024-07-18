@@ -5,20 +5,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Información básica de la cartera</title>
+  <title>Información de la cartera</title>
   <link rel="stylesheet" href="{% static '' %}">
 </head>
 
 <body>
   <div class="container">
-    <h2>Registrar información básica de la cartera:</h2>
+    <h2>Registrar información de la cartera:</h2>
 
     <form action="{% url 'add_basica' %}" method="post" class="form">
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit" class="btn">Guardar</button>
-      <button class="btn" onclick="window.location='{% url 'index' %}';">Cancelar</button>
     </form>
+
+    <button class="btn" onclick="window.location='{% url 'index' %}';">Cancelar</button>
+
   </div>
 </body>
 

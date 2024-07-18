@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login as auth_login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from .models import InformacionBasica, CarteraNivelacion
-from .forms import InformacionBasicaForm, CarteraNivelacionForm
+from .models import InformacionBasica
+from .models import CarteraNivelacion
+from .forms import InformacionBasicaForm
+from .forms import CarteraNivelacionForm
 
 """ #LOGIN:
 def login_view(request):
@@ -31,20 +33,18 @@ def add_basica(request):
     if request.method == 'POST':
         form = InformacionBasicaForm(request.POST)
         if form.is_valid():
-            basica_instance = form.save()
-            # Redirigir a la vista add_cartera con el ID de la basica_instance
-            return redirect('add_cartera', basica_id=basica_instance.pk)  # Utiliza .pk en lugar de .id
+          basica_instance = form.save(commit=False)
+          basica_instance.save()
+          return redirect('add_cartera', basica_id=basica_instance.id)
     else:
-        form = InformacionBasicaForm()
-    
+        form = InformacionBasicaForm()  #Se crea un formulario vacío para solicitudes GET
     return render(request, 'forms/basica.html', {'form': form})
 
 #READ ver_inicio:
 #@login_required
 def ver_inicio(request):
     basicas = InformacionBasica.objects.all()
-    carteras = CarteraNivelacion.objects.all()
-    return render(request, 'ver_inicio.html', {'basicas': basicas, 'carteras': carteras})
+    return render(request, 'ver_inicio.html', {'basicas': basicas})
 
 #READ ver_basica:
 #@login_required
@@ -83,11 +83,11 @@ def add_cartera(request, basica_id=None):
     if request.method == 'POST':
         formset = CarteraNivelacionForm(request.POST)
         if formset.is_valid():
-            instances = formset.save(commit=False)
+            cartera_instances = formset.save(commit=False)
             cota_inicial = basica_instance.cota_inicial
             vista_mas = basica_instance.vista_mas
             
-            for instance in instances:
+            for instance in cartera_instances:
                 instance.basica = basica_instance
                 tipo_punto = instance.tipo_punto
                 altura_instrumental = vista_mas + cota_inicial
@@ -101,14 +101,15 @@ def add_cartera(request, basica_id=None):
                     vista_menos = instance.vista_menos
                     cota_calculada = altura_instrumental - vista_menos
                     instance.altura_instrumental = cota_calculada + vista_mas
-    
-                instance.save()
-    
+ 
+                instance.save() #Guarda cada instancia.
+                
             return redirect('ver_inicio')  # Redirigir a la vista 'ver_inicio'
     else:
         formset = CarteraNivelacionForm()
     
     return render(request, 'forms/cartera.html', {'formset': formset, 'basica_id': basica_id})
+
 
 #READ ver_cartera:
 #@login_required

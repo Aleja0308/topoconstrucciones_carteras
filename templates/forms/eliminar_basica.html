@@ -10,7 +10,11 @@
       {% csrf_token %}
       <button class="delete-button" type="submit">Eliminar</button>
     </form>
+
   </div>
+
+  <button class="edit-button" onclick="window.location='{% url 'ver_inicio' %}';">Cancelar</button>
+
 </div>
 
 {% endblock %}
