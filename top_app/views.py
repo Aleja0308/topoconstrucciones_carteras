@@ -33,12 +33,11 @@ def add_basica(request):
     if request.method == 'POST':
         form = InformacionBasicaForm(request.POST)
         if form.is_valid():
-          basica_instance = form.save(commit=False)
-          basica_instance.save()
-          return redirect('add_cartera', basica_id=basica_instance.id)
+            form.save()
+            return redirect('forms/add_cartera')
     else:
-        form = InformacionBasicaForm()  #Se crea un formulario vacío para solicitudes GET
-    return render(request, 'forms/basica.html', {'form': form})
+        form = InformacionBasicaForm()
+    return render(request, 'forms/add_basica.html', {'form': form})
 
 #READ ver_inicio:
 #@login_required
@@ -77,39 +76,15 @@ def eliminar_basica(request, pk):
 
 #CREATE CarteraNivelacion:
 #@login_required
-def add_cartera(request, basica_id=None):
-    basica_instance = get_object_or_404(InformacionBasica, pk=basica_id)
-    
+def add_cartera(request):
     if request.method == 'POST':
-        formset = CarteraNivelacionForm(request.POST)
-        if formset.is_valid():
-            cartera_instances = formset.save(commit=False)
-            cota_inicial = basica_instance.cota_inicial
-            vista_mas = basica_instance.vista_mas
-            
-            for instance in cartera_instances:
-                instance.basica = basica_instance
-                tipo_punto = instance.tipo_punto
-                altura_instrumental = vista_mas + cota_inicial
-    
-                if tipo_punto == 'Delta':
-                    vista_menos = instance.vista_menos
-                    instance.cota_calculada = altura_instrumental - vista_menos
-    
-                elif tipo_punto == 'Cambio':
-                    vista_mas = instance.vista_mas
-                    vista_menos = instance.vista_menos
-                    cota_calculada = altura_instrumental - vista_menos
-                    instance.altura_instrumental = cota_calculada + vista_mas
- 
-                instance.save() #Guarda cada instancia.
-                
-            return redirect('ver_inicio')  # Redirigir a la vista 'ver_inicio'
+        form = CarteraNivelacionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('ver_inicio')
     else:
-        formset = CarteraNivelacionForm()
-    
-    return render(request, 'forms/cartera.html', {'formset': formset, 'basica_id': basica_id})
-
+        form = CarteraNivelacionForm()
+    return render(request, 'forms/add_cartera.html', {'form': form})
 
 #READ ver_cartera:
 #@login_required
