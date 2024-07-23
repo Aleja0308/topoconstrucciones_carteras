@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from .models import InformacionBasica
@@ -33,8 +34,8 @@ def add_basica(request):
     if request.method == 'POST':
         form = InformacionBasicaForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('forms/add_cartera')
+            basica = form.save()
+            return redirect('add_cartera')
     else:
         form = InformacionBasicaForm()
     return render(request, 'forms/add_basica.html', {'form': form})
@@ -59,7 +60,7 @@ def editar_basica(request, pk):
         form = InformacionBasicaForm(request.POST, instance=basica)
         if form.is_valid():
             form.save()
-            return redirect('ver_basica')  # Redirigir a la vista 'ver_basica'
+            return redirect('ver_inicio')  # Redirigir a la vista 'ver_basica'
     else:
         form = InformacionBasicaForm(instance=basica)
     
@@ -80,8 +81,11 @@ def add_cartera(request):
     if request.method == 'POST':
         form = CarteraNivelacionForm(request.POST)
         if form.is_valid():
-            form.save()
+            cartera = form.save()
+            messages.success(request, 'Cartera registrada exitosamente.')
             return redirect('ver_inicio')
+        else:
+            messages.error(request, 'Por favor corrige los errores en el formulario.')
     else:
         form = CarteraNivelacionForm()
     return render(request, 'forms/add_cartera.html', {'form': form})
@@ -106,13 +110,13 @@ def editar_cartera(request, pk):
     
     return render(request, 'forms/editar_cartera.html', {'form': form, 'cartera': cartera})
 
-#DELETE editar_cartera:
+#DELETE eliminar_cartera:
 #@login_required
 def eliminar_cartera(request, pk):
     cartera = get_object_or_404(CarteraNivelacion, pk=pk)
     if request.method == 'POST':
         cartera.delete()
-        return redirect('ver_cartera')  # Redirigir a la vista 'ver_cartera'
+        return redirect('ver_cartera')
     return render(request, 'forms/eliminar_cartera.html', {'cartera': cartera})
 
 #LOGOUT:
