@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.forms import inlineformset_factory
+from django.contrib import messages
 from .models import InformacionBasica
 from .models import CarteraNivelacion
 from .forms import InformacionBasicaForm
 from .forms import CarteraNivelacionForm
+from .forms import CarteraNivelacionFormSet
 
 """ #LOGIN:
 def login_view(request):
@@ -72,23 +74,31 @@ def eliminar_basica(request, pk):
     basica = get_object_or_404(InformacionBasica, pk=pk)
     if request.method == 'POST':
         basica.delete()
-        return redirect('ver_basica')  # Redirigir a la vista 'ver_basica'
+        return redirect('ver_inicio')  # Redirigir a la vista 'ver_basica'
     return render(request, 'forms/eliminar_basica.html', {'basica': basica})
 
 #CREATE CarteraNivelacion:
 #@login_required
 def add_cartera(request):
     if request.method == 'POST':
-        form = CarteraNivelacionForm(request.POST)
+        form = InformacionBasicaForm(request.POST)
         if form.is_valid():
-            cartera = form.save()
-            messages.success(request, 'Cartera registrada exitosamente.')
-            return redirect('ver_inicio')
+            basica = form.save(commit=False)
+            formset = CarteraNivelacionFormSet(request.POST, instance=basica)
+            if formset.is_valid():
+                basica.save()  # Guardar la instancia de InformacionBasica
+                formset.instance = basica  # Asignar la instancia al formset
+                formset.save()  # Guardar el formset
+                messages.success(request, 'Cartera registrada exitosamente.')
+                return redirect('ver_inicio')
+            else:
+                messages.error(request, 'Por favor corrige los errores en el formulario de puntos.')
         else:
-            messages.error(request, 'Por favor corrige los errores en el formulario.')
+            messages.error(request, 'Por favor corrige los errores en el formulario básico.')
     else:
-        form = CarteraNivelacionForm()
-    return render(request, 'forms/add_cartera.html', {'form': form})
+        form = InformacionBasicaForm()
+        formset = CarteraNivelacionFormSet()
+    return render(request, 'forms/add_cartera.html', {'form': form, 'formset': formset})
 
 #READ ver_cartera:
 #@login_required

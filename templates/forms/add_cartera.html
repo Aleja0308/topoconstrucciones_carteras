@@ -1,27 +1,80 @@
 {% load static %}
-
 <!DOCTYPE html>
-
 <html>
 
 <head>
   <title>Añadir Cartera de Nivelación</title>
+  <style>
+    .hidden {
+      display: none;
+    }
+  </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("add-more").addEventListener("click", function (event) {
+        event.preventDefault();
+        let formIdx = document.querySelectorAll(".dynamic-form").length;
+        let newForm = document.querySelector(".dynamic-form:first-of-type").cloneNode(true);
+        newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, formIdx);
+        document.getElementById("formset-container").appendChild(newForm);
+        newForm.querySelector(".delete").classList.remove("hidden");
+      });
+
+      document.addEventListener("click", function (event) {
+        if (event.target.classList.contains("delete")) {
+          event.preventDefault();
+          event.target.closest(".dynamic-form").remove();
+        }
+      });
+    });
+  </script>
 </head>
 
 <body>
-
   <h1>Añadir Cartera de Nivelación</h1>
-
-  <form action="{% url 'add_cartera' %}" method="post">
+  <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    <table>
+      <thead>
+        <tr>
+          <th>Tipo Punto</th>
+          <th>Punto</th>
+          <th>Altura Instrumental</th>
+          <th>Vista (+)</th>
+          <th>Vista (-)</th>
+          <th>Cota BM</th>
+          <th>Cota Calculada</th>
+          <th>Eliminar</th>
+        </tr>
+      </thead>
+      <tbody id="formset-container">
+        {{ formset.management_form }}
+        {% for form in formset %}
+        <tr class="dynamic-form">
+          <td>{{ form.tipo_punto }}</td>
+          <td>{{ form.punto }}</td>
+          <td>{{ form.altura_instrumental }}</td>
+          <td>{{ form.vista_mas }}</td>
+          <td>{{ form.vista_menos }}</td>
+          <td>{{ form.cota_inicial }}</td>
+          <td>{{ form.cota_calculada }}</td>
+          <td>
+            {% if not form.instance.pk %}
+            <a href="#" class="delete hidden">Eliminar</a>
+            {% else %}
+            <a href="#" class="delete">Eliminar</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button type="button" id="add-more">Agregar Punto</button>
     <button type="submit">Guardar</button>
   </form>
 
-  <button class="delete-button" onclick="window.location='{% url 'add_cartera' %}';">Agregar Punto</button>
-
   <button class="delete-button" onclick="window.location='{% url 'index' %}';">Volver</button>
-
 </body>
 
 </html>

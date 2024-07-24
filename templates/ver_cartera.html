@@ -1,47 +1,41 @@
 {% extends "layouts/index.html" %}
 
 {% block content %}
-
+<h1>Ver Cartera de Nivelación</h1>
 {% for cartera in carteras %}
-
 <table>
   <tr>
     <th>Tipo Punto</th>
     <td>{{ cartera.tipo_punto }}</td>
   </tr>
-
   <tr>
     <th>Punto</th>
     <td>{{ cartera.punto }}</td>
   </tr>
-
   <tr>
     <th>Altura Instrumental</th>
     <td>{{ cartera.altura_instrumental }}</td>
   </tr>
-
   <tr>
     <th>Vista (+)</th>
     <td>{{ cartera.vista_mas }}</td>
   </tr>
-
   <tr>
     <th>Vista (-)</th>
     <td>{{ cartera.vista_menos }}</td>
-  </tr>
-
   <tr>
-    <th>Cota</th>
+    <th>Cota BM</th>
+    <td>{{ cartera.cota_inicial }}</td>
+  </tr>
+  </tr>
+  <tr>
+    <th>Cota Calculada</th>
     <td>{{ cartera.cota_calculada }}</td>
   </tr>
-
 </table>
-
 <div class="info-actions">
   <button class="edit-button" onclick="window.location='{% url 'editar_cartera' cartera.pk %}';">Editar</button>
   <button class="delete-button" onclick="window.location='{% url 'eliminar_cartera' cartera.pk %}';">Eliminar</button>
 </div>
-
 {% endfor %}
-
 {% endblock %}
