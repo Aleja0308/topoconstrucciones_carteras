@@ -6,27 +6,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Topoconstrucciones</title>
+  <title>Editar Cartera</title>
 </head>
 
 <body>
 
   <div class="form__update">
-
     <form action="{% url 'editar_cartera' cartera.pk %}" method="post">
-
       {% csrf_token %}
-      {{ form.as_div }}
+      {{ form.as_p }}
 
       <button type="submit">Guardar cambios</button>
-
     </form>
 
     <button class="delete-button" onclick="window.location='{% url 'ver_inicio' %}';">Cancelar</button>
-
     <button class="delete-button" onclick="window.location='{% url 'add_cartera' %}';">Agregar Punto</button>
-
-
   </div>
 
 </body>

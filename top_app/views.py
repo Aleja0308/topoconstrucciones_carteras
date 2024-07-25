@@ -114,7 +114,10 @@ def editar_cartera(request, pk):
         form = CarteraNivelacionForm(request.POST, instance=cartera)
         if form.is_valid():
             form.save()
-            return redirect('ver_cartera')  # Redirigir a la vista 'ver_cartera'
+            messages.success(request, 'Cartera actualizada exitosamente.')
+            return redirect('ver_cartera')
+        else:
+            messages.error(request, 'Por favor corrige los errores en el formulario.')
     else:
         form = CarteraNivelacionForm(instance=cartera)
     
