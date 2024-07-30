@@ -32,9 +32,9 @@
 
 <body>
   <h1>Añadir Cartera de Nivelación</h1>
+
   <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+
     <table>
       <thead>
         <tr>
@@ -47,9 +47,12 @@
           <th>Cota</th>
         </tr>
       </thead>
+
       <tbody id="formset-container">
+
         {{ formset.management_form }}
         {% for form in formset %}
+
         <tr class="dynamic-form">
           <td>{{ form.tipo_punto }}</td>
           <td>{{ form.punto }}</td>
@@ -58,6 +61,7 @@
           <td>{{ form.vista_menos }}</td>
           <td>{{ form.cota_inicial }}</td>
           <td>{{ form.cota_calculada }}</td>
+
           <td>
             {% if not form.instance.pk %}
             <a href="#" class="delete hidden">Eliminar</a>
@@ -65,15 +69,22 @@
             <a href="#" class="delete">Eliminar</a>
             {% endif %}
           </td>
+
         </tr>
+
         {% endfor %}
+
       </tbody>
+
     </table>
+
     <button type="button" id="add-more">Agregar Punto</button>
     <button type="submit">Guardar</button>
+
   </form>
 
   <button class="delete-button" onclick="window.location='{% url 'index' %}';">Volver</button>
+  
 </body>
 
 </html>
