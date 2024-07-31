@@ -33,7 +33,9 @@
 <body>
   <h1>Añadir Cartera de Nivelación</h1>
 
-  <form method="post">
+  <form action="{% url 'add_cartera' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
 
     <table>
       <thead>
@@ -84,7 +86,7 @@
   </form>
 
   <button class="delete-button" onclick="window.location='{% url 'index' %}';">Volver</button>
-  
+
 </body>
 
 </html>
