@@ -37,7 +37,7 @@ def add_basica(request):
         form = InformacionBasicaForm(request.POST)
         if form.is_valid():
             basica = form.save()
-            return redirect('add_cartera')
+            return redirect('add_cartera', basica_id=basica.id)  # Redirigir directamente a add_cartera con la nueva InformacionBasica
     else:
         form = InformacionBasicaForm()
     return render(request, 'forms/add_basica.html', {'form': form})
@@ -73,34 +73,32 @@ def editar_basica(request, pk):
 def eliminar_basica(request, pk):
     basica = get_object_or_404(InformacionBasica, pk=pk)
     if request.method == 'POST':
-        basica.delete()
-        return redirect('ver_inicio')  # Redirigir a la vista 'ver_basica'
+        try:
+            basica.delete()
+            messages.success(request, 'Información básica eliminada exitosamente.')
+        except Exception as e:
+            messages.error(request, f'Error al eliminar la información básica: {str(e)}')
+        return redirect('ver_inicio')
     return render(request, 'forms/eliminar_basica.html', {'basica': basica})
 
 #CREATE CarteraNivelacion:
 #@login_required
-def add_cartera(request):
+def add_cartera(request, basica_id):
+    basica = get_object_or_404(InformacionBasica, pk=basica_id)
+    
     if request.method == 'POST':
-        form = InformacionBasicaForm(request.POST)
-        formset = CarteraNivelacionFormSet(request.POST)
-
-        if form.is_valid() and formset.is_valid():
-            basica = form.save(commit=False)
-            basica.save()
-            formset.instance = basica
+        formset = CarteraNivelacionFormSet(request.POST, instance=basica)
+        
+        if formset.is_valid():
             formset.save()
             messages.success(request, 'Cartera registrada exitosamente.')
             return redirect('ver_inicio')
         else:
-            if not form.is_valid():
-                messages.error(request, 'Por favor corrige los errores en el formulario básico.')
-            if not formset.is_valid():
-                messages.error(request, 'Por favor corrige los errores en el formulario de puntos.')
+            messages.error(request, 'Por favor corrige los errores en el formulario de puntos.')
     else:
-        formset = CarteraNivelacionFormSet()
+        formset = CarteraNivelacionFormSet(instance=basica)
 
-    # Solo pasamos el formset al contexto
-    return render(request, 'forms/add_cartera.html', {'formset': formset})
+    return render(request, 'forms/add_cartera.html', {'formset': formset, 'basica': basica})
 
 #READ ver_cartera:
 #@login_required
@@ -130,7 +128,11 @@ def editar_cartera(request, pk):
 def eliminar_cartera(request, pk):
     cartera = get_object_or_404(CarteraNivelacion, pk=pk)
     if request.method == 'POST':
-        cartera.delete()
+        try:
+            cartera.delete()
+            messages.success(request, 'Cartera eliminada exitosamente.')
+        except Exception as e:
+            messages.error(request, f'Error al eliminar la cartera: {str(e)}')
         return redirect('ver_cartera')
     return render(request, 'forms/eliminar_cartera.html', {'cartera': cartera})
 

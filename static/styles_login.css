@@ -6,15 +6,17 @@
   box-sizing: border-box;
 }
 
-html{
-  scroll-behavior: smooth;
+html, body {
+    overflow: hidden;
+    height: 100%;
+    margin: 0;
 }
 
 body{
-  background-image: url(images/fondo_login.png);
+  background-image: url('images/fondo_login.jpg');
   background-repeat: no-repeat;
-  background-size: cover;
-  font-family: "Gill Sans Extrabold", Helvetica, sans-serif
+  background-size:calc(100%);
+  font-family: "Gill Sans Extrabold", Helvetica, sans-serif;
 }
 
 .header_logo{
@@ -37,7 +39,8 @@ body{
 .card_login{
   display: flex;
   flex-direction: column;
-  background-color: #FF5400;
+  background-color: #2727279d;
+  opacity:calc(95%);
   min-width: 320px;
   border-radius: 8px;
   padding: 20px;
@@ -49,7 +52,7 @@ body{
   display: flex;
   gap: 5px;
   padding: 5px;
-  border-radius: 10px;
+  border-radius: 30px;
 }
 
 .form_control--row{
@@ -65,17 +68,18 @@ body{
   padding: 10px;
   gap: 1rem;
   border-radius: 8px;
-  color: #FF5400;
+  color: #f08326;
   border: none;
 }
 
 .form_button{
   font-size: medium;
+  font-weight: 600;
   width: 100%;
   padding: 10px;
   gap: 1rem;
-  border-radius: 8px;
+  border-radius: 30px;
   border: none;
-  color: #FF5400;
+  color: #f08326;
   margin-top: 25px;
 }

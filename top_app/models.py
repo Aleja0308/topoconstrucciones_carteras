@@ -1,6 +1,9 @@
 from django.db import models
 
 # Se define el modelo para la información básica de la cartera:
+from django.db import models
+
+# Modelo para la información básica de la cartera
 class InformacionBasica(models.Model):
     nombre = models.CharField(max_length=100)
     ciudad = models.CharField(max_length=50)
@@ -9,7 +12,7 @@ class InformacionBasica(models.Model):
     fecha = models.DateField()
     descripcion = models.CharField(max_length=100)
 
-# Se define el modelo para la información numérica de la cartera:
+# Modelo para la información numérica de la cartera
 class CarteraNivelacion(models.Model):
     ROLES_CHOICES = (
         ('BM', 'BM'),
@@ -23,12 +26,13 @@ class CarteraNivelacion(models.Model):
     vista_menos = models.FloatField(blank=True, null=True)
     cota_inicial = models.FloatField(blank=True, null=True)
     cota_calculada = models.FloatField(blank=True, null=True)
-    basica = models.OneToOneField(InformacionBasica, on_delete=models.CASCADE, null=True)
+    basica = models.ForeignKey(InformacionBasica, on_delete=models.CASCADE, related_name="carteras")
 
     def __str__(self):
         return self.tipo_punto
 
     def calcular_cota(self):
+        # Lógica para calcular la cota en función del tipo de punto
         if self.tipo_punto == 'BM':
             if self.cota_inicial is not None and self.vista_mas is not None:
                 self.altura_instrumental = self.cota_inicial + self.vista_mas
