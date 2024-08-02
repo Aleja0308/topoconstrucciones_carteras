@@ -11,7 +11,7 @@
 <body>
   <div class="form__update">
 
-    <form action="{% url 'editar_cartera' cartera.pk %}" method="post">
+    <form action="{% url 'editar_cartera' pk=cartera.pk %}" method="post">
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit">Guardar cambios</button>

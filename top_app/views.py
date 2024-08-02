@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.forms import inlineformset_factory
 from django.contrib import messages
 from .models import InformacionBasica
 from .models import CarteraNivelacion
@@ -114,14 +113,10 @@ def editar_cartera(request, pk):
         form = CarteraNivelacionForm(request.POST, instance=cartera)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Cartera actualizada exitosamente.')
-            return redirect('ver_cartera')
-        else:
-            messages.error(request, 'Por favor corrige los errores en el formulario.')
+            return redirect('read_inicio')
     else:
         form = CarteraNivelacionForm(instance=cartera)
-    
-    return render(request, 'forms/editar_cartera.html', {'form': form, 'cartera': cartera})
+    return render(request, 'forms/editar_cartera.html', {'form': form, 'medica': cartera})
 
 #DELETE eliminar_cartera:
 #@login_required
