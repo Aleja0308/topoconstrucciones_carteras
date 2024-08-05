@@ -113,10 +113,10 @@ def editar_cartera(request, pk):
         form = CarteraNivelacionForm(request.POST, instance=cartera)
         if form.is_valid():
             form.save()
-            return redirect('read_inicio')
+            return redirect('ver_inicio')
     else:
         form = CarteraNivelacionForm(instance=cartera)
-    return render(request, 'forms/editar_cartera.html', {'form': form, 'medica': cartera})
+    return render(request, 'forms/editar_cartera.html', {'form': form, 'cartera': cartera})
 
 #DELETE eliminar_cartera:
 #@login_required

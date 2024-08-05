@@ -5,7 +5,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Editar Cartera</title>
-  <link rel="stylesheet" href="{% static '' %}">
 </head>
 
 <body>
@@ -18,7 +17,7 @@
     </form>
 
     <button class="delete-button" onclick="window.location='{% url 'ver_inicio' %}';">Cancelar</button>
-    <button class="delete-button" onclick="window.location='{% url 'add_cartera' %}';">Agregar Punto</button>
+    <button class="delete-button" onclick="window.location='{% url 'add_cartera' basica_id=cartera.basica_id %}';">Agregar Punto</button>
 
   </div>
 
