@@ -91,7 +91,7 @@ def add_cartera(request, basica_id):
         if formset.is_valid():
             formset.save()
             messages.success(request, 'Cartera registrada exitosamente.')
-            return redirect('ver_inicio')
+            return redirect('ver_cartera')  # Cambiado para redirigir a la vista que muestra todas las carteras
         else:
             messages.error(request, 'Por favor corrige los errores en el formulario de puntos.')
     else:

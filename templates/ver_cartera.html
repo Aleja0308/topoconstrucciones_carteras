@@ -1,41 +1,39 @@
 {% extends "layouts/index.html" %}
 
 {% block content %}
+
 <h1>Ver Cartera de Nivelación</h1>
-{% for cartera in carteras %}
-<table>
-  <tr>
-    <th>Tipo Punto</th>
-    <td>{{ cartera.tipo_punto }}</td>
-  </tr>
-  <tr>
-    <th>Punto</th>
-    <td>{{ cartera.punto }}</td>
-  </tr>
-  <tr>
-    <th>Altura Instrumental</th>
-    <td>{{ cartera.altura_instrumental }}</td>
-  </tr>
-  <tr>
-    <th>Vista (+)</th>
-    <td>{{ cartera.vista_mas }}</td>
-  </tr>
-  <tr>
-    <th>Vista (-)</th>
-    <td>{{ cartera.vista_menos }}</td>
-  <tr>
-    <th>Cota BM</th>
-    <td>{{ cartera.cota_inicial }}</td>
-  </tr>
-  </tr>
-  <tr>
-    <th>Cota</th>
-    <td>{{ cartera.cota_calculada }}</td>
-  </tr>
+
+<table class="">
+  <thead>
+    <tr>
+      <th>Tipo Punto</th>
+      <th>Punto</th>
+      <th>Altura Instrumental</th>
+      <th>Vista (+)</th>
+      <th>Cota BM</th>
+      <th>Cota</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for cartera in carteras %}
+    <tr>
+      <td>{{ cartera.tipo_punto }}</td>
+      <td>{{ cartera.punto }}</td>
+      <td>{{ cartera.altura_instrumental }}</td>
+      <td>{{ cartera.vista_mas }}</td>
+      <td>{{ cartera.vista_menos }}</td>
+      <td>{{ cartera.cota_inicial }}</td>
+      <td>{{ cartera.cota_inicial }}</td>
+    </tr>
+  </tbody>
+
 </table>
+
 <div class="info-actions">
-  <button class="edit-button" onclick="window.location='{% url 'editar_cartera' cartera.pk %}';">Editar</button>
-  <button class="delete-button" onclick="window.location='{% url 'eliminar_cartera' cartera.pk %}';">Eliminar</button>
+  <button class="delete-button" onclick="window.location='{% url 'ver_inicio' %}';">Volver</button>
 </div>
+
 {% endfor %}
 {% endblock %}

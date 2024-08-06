@@ -19,7 +19,7 @@ class InformacionBasicaForm(forms.ModelForm):
 class CarteraNivelacionForm(forms.ModelForm):
     class Meta:
         model = CarteraNivelacion
-        fields = ['tipo_punto', 'punto', 'vista_mas', 'vista_menos', 'cota_inicial', 'cota_calculada']
+        fields = ['tipo_punto', 'punto', 'altura_instrumental', 'vista_mas', 'vista_menos', 'cota_inicial', 'cota_calculada']
     
     def clean(self):
         cleaned_data = super().clean()

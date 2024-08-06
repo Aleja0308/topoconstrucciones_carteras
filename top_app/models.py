@@ -26,7 +26,7 @@ class CarteraNivelacion(models.Model):
     vista_menos = models.FloatField(blank=True, null=True)
     cota_inicial = models.FloatField(blank=True, null=True)
     cota_calculada = models.FloatField(blank=True, null=True)
-    basica = models.ForeignKey(InformacionBasica, on_delete=models.CASCADE, related_name="carteras")
+    basica = models.ForeignKey(InformacionBasica, on_delete=models.CASCADE, null= True)
 
     def __str__(self):
         return self.tipo_punto
