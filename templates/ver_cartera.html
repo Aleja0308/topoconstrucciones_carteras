@@ -4,15 +4,17 @@
 
 <h1>Ver Cartera de Nivelación</h1>
 
-<table class="">
+<table>
   <thead>
     <tr>
       <th>Tipo Punto</th>
       <th>Punto</th>
       <th>Altura Instrumental</th>
       <th>Vista (+)</th>
-      <th>Cota BM</th>
-      <th>Cota</th>
+      <th>Vista (-)</th>
+      <th>Cota Inicial</th>
+      <th>Cota Calculada</th>
+      <th>Acciones</th>
     </tr>
   </thead>
 
@@ -25,15 +27,19 @@
       <td>{{ cartera.vista_mas }}</td>
       <td>{{ cartera.vista_menos }}</td>
       <td>{{ cartera.cota_inicial }}</td>
-      <td>{{ cartera.cota_inicial }}</td>
+      <td>{{ cartera.cota_calculada }}</td>
+      <td>
+        <a href="{% url 'editar_cartera' pk=cartera.pk %}">Editar</a>
+        <a href="{% url 'eliminar_cartera' pk=cartera.pk %}">Eliminar</a>
+      </td>
     </tr>
+    {% empty %}
+    {% endfor %}
   </tbody>
-
 </table>
 
 <div class="info-actions">
   <button class="delete-button" onclick="window.location='{% url 'ver_inicio' %}';">Volver</button>
 </div>
 
-{% endfor %}
 {% endblock %}

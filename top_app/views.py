@@ -36,7 +36,7 @@ def add_basica(request):
         form = InformacionBasicaForm(request.POST)
         if form.is_valid():
             basica = form.save()
-            return redirect('add_cartera', basica_id=basica.id)  # Redirigir directamente a add_cartera con la nueva InformacionBasica
+            return redirect('add_cartera', pk=basica.id)  # Cambiar basica_id a pk
     else:
         form = InformacionBasicaForm()
     return render(request, 'forms/add_basica.html', {'form': form})
@@ -82,22 +82,20 @@ def eliminar_basica(request, pk):
 
 #CREATE CarteraNivelacion:
 #@login_required
-def add_cartera(request, basica_id):
-    basica = get_object_or_404(InformacionBasica, pk=basica_id)
-    
+def add_cartera(request, pk):
+    informacion_basica = InformacionBasica.objects.get(pk=pk)
     if request.method == 'POST':
-        formset = CarteraNivelacionFormSet(request.POST, instance=basica)
-        
+        formset = CarteraNivelacionFormSet(request.POST, instance=informacion_basica)
         if formset.is_valid():
             formset.save()
-            messages.success(request, 'Cartera registrada exitosamente.')
-            return redirect('ver_cartera')  # Cambiado para redirigir a la vista que muestra todas las carteras
-        else:
-            messages.error(request, 'Por favor corrige los errores en el formulario de puntos.')
+            # Procesar cada instancia para calcular la cota
+            for form in formset:
+                if form.instance.pk:  # Solo calcular si la instancia es nueva o editada
+                    form.instance.calcular_cota()
+            return redirect('ver_inicio')  # Cambia esto por la URL a la que quiera redirigir
     else:
-        formset = CarteraNivelacionFormSet(instance=basica)
-
-    return render(request, 'forms/add_cartera.html', {'formset': formset, 'basica': basica})
+        formset = CarteraNivelacionFormSet(instance=informacion_basica)
+    return render(request, 'forms/add_cartera.html', {'formset': formset, 'informacion_basica': informacion_basica})
 
 #READ ver_cartera:
 #@login_required

@@ -9,18 +9,21 @@
 
 <body>
   <div class="form__update">
-
+    <h1>Editar Cartera</h1>
     <form action="{% url 'editar_cartera' pk=cartera.pk %}" method="post">
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit">Guardar cambios</button>
     </form>
 
-    <button class="delete-button" onclick="window.location='{% url 'ver_inicio' %}';">Cancelar</button>
-    <button class="delete-button" onclick="window.location='{% url 'add_cartera' basica_id=cartera.basica_id %}';">Agregar Punto</button>
-
+    <div class="action-buttons">
+      <button class="cancel-button" onclick="window.location='{% url 'ver_cartera' %}';">Cancelar</button>
+      {% if cartera.basica %}
+      <button class="add-point-button" onclick="window.location='{% url 'add_cartera' pk=cartera.basica.pk %}';">Agregar
+        Punto</button>
+      {% endif %}
+    </div>
   </div>
-
 </body>
 
 </html>
