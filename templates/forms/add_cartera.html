@@ -3,12 +3,11 @@
 <html>
 
 <head>
-  <title>Añadir Cartera de Nivelación</title>
-  <style>
-    .hidden {
-      display: none;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Añadir Cartera</title>
+  <link rel="stylesheet" href="">
+
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("add-more").addEventListener("click", function (event) {
@@ -28,55 +27,61 @@
       });
     });
   </script>
+
 </head>
 
 <body>
   <h1>Añadir Cartera de Nivelación</h1>
 
-  <form action="{% url 'add_cartera' pk=informacion_basica.id %}" method="post"></form>
-  {% csrf_token %}
+  <form action="{% url 'add_cartera' basica_id %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
 
-  {{ formset.management_form }}
+    <table>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Tipo Punto</th>
-        <th>Punto</th>
-        <th>Altura Instrumental</th>
-        <th>Vista (+)</th>
-        <th>Vista (-)</th>
-        <th>Cota BM</th>
-        <th>Cota</th>
-        <th>Eliminar</th>
-      </tr>
-    </thead>
+      <thead>
+        <tr>
+          <th>Tipo Punto</th>
+          <th>Punto</th>
+          <th>Altura Instrumental</th>
+          <th>Vista (+)</th>
+          <th>Vista (-)</th>
+          <th>Cota BM</th>
+          <th>Cota</th>
+        </tr>
+      </thead>
 
-    <tbody id="formset-container">
-      {% for form in formset %}
-      <tr class="dynamic-form">
-        <td>{{ form.tipo_punto }}</td>
-        <td>{{ form.punto }}</td>
-        <td>{{ form.altura_instrumental }}</td>
-        <td>{{ form.vista_mas }}</td>
-        <td>{{ form.vista_menos }}</td>
-        <td>{{ form.cota_inicial }}</td>
-        <td>{{ form.cota_calculada }}</td>
-        <td>
-          {% if not form.instance.pk %}
-          <a href="#" class="delete hidden">Eliminar</a>
-          {% else %}
-          <a href="#" class="delete">Eliminar</a>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <button type="button" id="add-more">Agregar Punto</button>
-  <button type="submit">Guardar</button>
+      <tbody id="formset-container">
+        {% for form in formset %}
+        <tr class="dynamic-form">
+          <td>{{ form.tipo_punto }}</td>
+          <td>{{ form.punto }}</td>
+          <td>{{ form.altura_instrumental }}</td>
+          <td>{{ form.vista_mas }}</td>
+          <td>{{ form.vista_menos }}</td>
+          <td>{{ form.cota_inicial }}</td>
+          <td>{{ form.cota_calculada }}</td>
+          <td>
+            {% if not form.instance.pk %}
+            <a href="#" class="delete hidden">Eliminar</a>
+            {% else %}
+            <a href="#" class="delete">Eliminar</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+
+    <button type="button" id="add-more">Agregar Punto</button>
+
+    <button type="submit">Guardar</button>
+
   </form>
+
   <button class="delete-button" onclick="window.location='{% url 'index' %}';">Volver</button>
+
 </body>
 
 </html>

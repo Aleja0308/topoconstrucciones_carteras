@@ -29,8 +29,8 @@
       <td>{{ cartera.cota_inicial }}</td>
       <td>{{ cartera.cota_calculada }}</td>
       <td>
-        <a href="{% url 'editar_cartera' pk=cartera.pk %}">Editar</a>
-        <a href="{% url 'eliminar_cartera' pk=cartera.pk %}">Eliminar</a>
+        <a href="{% url 'editar_cartera' cartera.pk %}">Editar</a>
+        <a href="{% url 'eliminar_cartera' cartera.pk %}">Eliminar</a>
       </td>
     </tr>
     {% empty %}
@@ -39,7 +39,7 @@
 </table>
 
 <div class="info-actions">
-  <button class="delete-button" onclick="window.location='{% url 'ver_inicio' %}';">Volver</button>
+  <button class="inicio-button" onclick="window.location='{% url 'ver_inicio' %}';">Volver</button>
 </div>
 
 {% endblock %}

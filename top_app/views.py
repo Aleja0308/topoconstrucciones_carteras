@@ -6,7 +6,6 @@ from .models import InformacionBasica
 from .models import CarteraNivelacion
 from .forms import InformacionBasicaForm
 from .forms import CarteraNivelacionForm
-from .forms import CarteraNivelacionFormSet
 
 """ #LOGIN:
 def login_view(request):
@@ -29,23 +28,24 @@ def login_view(request):
 def index(request):
     return render(request, 'layouts/index.html', {})
 
+#READ ver_inicio:
+#@login_required
+def ver_inicio(request):
+    basicas = InformacionBasica.objects.all()
+    return render(request, 'ver_inicio.html', {'basicas': basicas})
+
 #CREATE Basica:
 #@login_required
 def add_basica(request):
     if request.method == 'POST':
         form = InformacionBasicaForm(request.POST)
         if form.is_valid():
-            basica = form.save()
-            return redirect('add_cartera', pk=basica.id)  # Cambiar basica_id a pk
+          basica_instance = form.save(commit=False)
+          basica_instance.save()
+          return redirect('add_cartera', basica_id=basica_instance.id)
     else:
-        form = InformacionBasicaForm()
+        form = InformacionBasicaForm()  #Se crea un formulario vacío para solicitudes GET
     return render(request, 'forms/add_basica.html', {'form': form})
-
-#READ ver_inicio:
-#@login_required
-def ver_inicio(request):
-    basicas = InformacionBasica.objects.all()
-    return render(request, 'ver_inicio.html', {'basicas': basicas})
 
 #READ ver_basica:
 #@login_required
@@ -61,10 +61,9 @@ def editar_basica(request, pk):
         form = InformacionBasicaForm(request.POST, instance=basica)
         if form.is_valid():
             form.save()
-            return redirect('ver_inicio')  # Redirigir a la vista 'ver_basica'
+            return redirect('editar_cartera')
     else:
         form = InformacionBasicaForm(instance=basica)
-    
     return render(request, 'forms/editar_basica.html', {'form': form, 'basica': basica})
 
 #DELETE eliminar_basica:
@@ -72,30 +71,25 @@ def editar_basica(request, pk):
 def eliminar_basica(request, pk):
     basica = get_object_or_404(InformacionBasica, pk=pk)
     if request.method == 'POST':
-        try:
-            basica.delete()
-            messages.success(request, 'Información básica eliminada exitosamente.')
-        except Exception as e:
-            messages.error(request, f'Error al eliminar la información básica: {str(e)}')
-        return redirect('ver_inicio')
+        basica.delete()
+        return redirect('ver_basica')
     return render(request, 'forms/eliminar_basica.html', {'basica': basica})
 
 #CREATE CarteraNivelacion:
 #@login_required
-def add_cartera(request, pk):
-    informacion_basica = InformacionBasica.objects.get(pk=pk)
+def add_cartera(request, basica_id=None):
+    basica_instance = InformacionBasica.objects.get(pk=basica_id)
     if request.method == 'POST':
-        formset = CarteraNivelacionFormSet(request.POST, instance=informacion_basica)
-        if formset.is_valid():
-            formset.save()
-            # Procesar cada instancia para calcular la cota
-            for form in formset:
-                if form.instance.pk:  # Solo calcular si la instancia es nueva o editada
-                    form.instance.calcular_cota()
-            return redirect('ver_inicio')  # Cambia esto por la URL a la que quiera redirigir
+        form = CarteraNivelacionForm(request.POST)
+        if form.is_valid():
+            cartera = form.save(commit=False)
+            cartera.basica_instance = basica_instance
+            cartera.save()
+            cartera.calcular_cota()
+            return redirect('ver_inicio')
     else:
-        formset = CarteraNivelacionFormSet(instance=informacion_basica)
-    return render(request, 'forms/add_cartera.html', {'formset': formset, 'informacion_basica': informacion_basica})
+        form = CarteraNivelacionForm()
+    return render(request, 'forms/add_cartera.html', {'form': form, 'basica_instance': basica_instance})
 
 #READ ver_cartera:
 #@login_required
@@ -121,11 +115,7 @@ def editar_cartera(request, pk):
 def eliminar_cartera(request, pk):
     cartera = get_object_or_404(CarteraNivelacion, pk=pk)
     if request.method == 'POST':
-        try:
-            cartera.delete()
-            messages.success(request, 'Cartera eliminada exitosamente.')
-        except Exception as e:
-            messages.error(request, f'Error al eliminar la cartera: {str(e)}')
+        cartera.delete()
         return redirect('ver_cartera')
     return render(request, 'forms/eliminar_cartera.html', {'cartera': cartera})
 

@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<form method="post" action="{% url 'eliminar_cartera' pk=cartera.pk %}">
+<form action="{% url 'eliminar_cartera' cartera.pk %}" method="post">
   {% csrf_token %}
   <button type="submit">Eliminar</button>
 </form>

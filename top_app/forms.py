@@ -38,12 +38,3 @@ class CarteraNivelacionForm(forms.ModelForm):
             if vista_menos is None:
                 self.add_error('vista_menos', 'Para el tipo de punto Cambio, la vista (-) también es obligatoria.')
         return cleaned_data
-
-# Crear el formset para CarteraNivelacion
-CarteraNivelacionFormSet = inlineformset_factory(
-    InformacionBasica,
-    CarteraNivelacion,
-    form=CarteraNivelacionForm,
-    extra=1,
-    can_delete=True
-)

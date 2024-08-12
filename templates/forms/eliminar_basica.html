@@ -3,12 +3,14 @@
 {% block content %}
 
 <div class="container">
+
   <div class="alert">
+    
     <h2>¿Está seguro de eliminar a {{ basica.nombre }}?</h2>
 
-    <form method="post" action="{% url 'eliminar_basica' basica.pk %}">
+    <form action="{% url 'eliminar_basica' basica.pk %}" method="post">
       {% csrf_token %}
-      <button class="delete-button" type="submit">Eliminar</button>
+      <button type="submit">Eliminar</button>
     </form>
 
   </div>
