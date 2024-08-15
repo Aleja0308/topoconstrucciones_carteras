@@ -1,8 +1,5 @@
 from django.db import models
 
-# Se define el modelo para la información básica de la cartera:
-from django.db import models
-
 # Modelo para la información básica de la cartera
 class InformacionBasica(models.Model):
     nombre = models.CharField(max_length=100)

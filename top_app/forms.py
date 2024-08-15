@@ -1,7 +1,5 @@
 from django import forms
-from django.forms import inlineformset_factory
-from .models import InformacionBasica
-from .models import CarteraNivelacion
+from .models import InformacionBasica, CarteraNivelacion
 
 class InformacionBasicaForm(forms.ModelForm):
     class Meta:
@@ -19,8 +17,18 @@ class InformacionBasicaForm(forms.ModelForm):
 class CarteraNivelacionForm(forms.ModelForm):
     class Meta:
         model = CarteraNivelacion
-        fields = ['tipo_punto', 'punto', 'vista_mas', 'vista_menos', 'cota_inicial', 'cota_calculada']
-    
+        fields = ['tipo_punto', 'punto', 'altura_instrumental', 'vista_mas', 'vista_menos', 'cota_inicial', 'cota_calculada', 'basica']
+        widgets = {
+            'tipo_punto': forms.Select(attrs={'class': 'form-control'}),
+            'punto': forms.TextInput(attrs={'class': 'form-control'}),
+            'altura_instrumental': forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
+            'vista_mas': forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
+            'vista_menos': forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
+            'cota_inicial': forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
+            'cota_calculada': forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
+            'basica': forms.Select(attrs={'class': 'form-control'}),
+        }
+
     def clean(self):
         cleaned_data = super().clean()
         tipo_punto = cleaned_data.get('tipo_punto')
@@ -38,12 +46,3 @@ class CarteraNivelacionForm(forms.ModelForm):
             if vista_menos is None:
                 self.add_error('vista_menos', 'Para el tipo de punto Cambio, la vista (-) también es obligatoria.')
         return cleaned_data
-
-# Crear el formset para CarteraNivelacion
-CarteraNivelacionFormSet = inlineformset_factory(
-    InformacionBasica,
-    CarteraNivelacion,
-    form=CarteraNivelacionForm,
-    extra=1,
-    can_delete=True
-)
