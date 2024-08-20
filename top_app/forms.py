@@ -32,17 +32,33 @@ class CarteraNivelacionForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         tipo_punto = cleaned_data.get('tipo_punto')
-        cota_inicial = cleaned_data.get('cota_inicial')
+        altura_instrumental = cleaned_data.get('altura_instrumental')
         vista_mas = cleaned_data.get('vista_mas')
         vista_menos = cleaned_data.get('vista_menos')
+        cota_inicial = cleaned_data.get('cota_inicial')
+        cota_calculada = cleaned_data.get('cota_calculada')
 
-        if tipo_punto == 'BM' and cota_inicial is None:
-            self.add_error('cota_inicial', 'Para el tipo de punto BM, la cota inicial es obligatoria.')
-        elif tipo_punto == 'Delta' and vista_menos is None:
-            self.add_error('vista_menos', 'Para el tipo de punto Delta, la vista (-) es obligatoria.')
+        # Validaciones basadas en tipo de punto
+        if tipo_punto == 'BM':
+            if cota_inicial is None:
+                self.add_error('cota_inicial', 'Para el tipo de punto BM, la cota inicial es obligatoria.')
+            elif altura_instrumental is None and vista_mas is not None:
+                cleaned_data['altura_instrumental'] = cota_inicial + vista_mas
+
+        elif tipo_punto == 'Delta':
+            if vista_menos is None:
+                self.add_error('vista_menos', 'Para el tipo de punto Delta, la vista (-) es obligatoria.')
+            elif cota_calculada is None and altura_instrumental is not None:
+                cleaned_data['cota_calculada'] = altura_instrumental - vista_menos
+
         elif tipo_punto == 'Cambio':
             if vista_mas is None:
                 self.add_error('vista_mas', 'Para el tipo de punto Cambio, la vista (+) es obligatoria.')
             if vista_menos is None:
                 self.add_error('vista_menos', 'Para el tipo de punto Cambio, la vista (-) también es obligatoria.')
+            if altura_instrumental is None and cota_calculada is not None:
+                cleaned_data['altura_instrumental'] = cota_calculada + vista_mas
+            if cota_calculada is None and altura_instrumental is not None:
+                cleaned_data['cota_calculada'] = altura_instrumental - vista_menos
+
         return cleaned_data

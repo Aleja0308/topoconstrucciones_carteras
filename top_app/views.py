@@ -25,12 +25,21 @@ def login_view(request):
     else:
         return render(request, 'layouts/partials/login.html', {}) """
 
-#INDEX:
+""" #INDEX:
 #@login_required
 def index(request):
     return render(request, 'layouts/index.html', {})
 
-#CREATE Basica:
+#READ ver_inicio:
+#@login_required
+def ver_inicio(request):
+    basicas = InformacionBasica.objects.all()
+    return render(request, 'ver_inicio.html', {'basicas': basicas})
+   """
+  
+  
+  
+""" #CREATE Basica:
 #@login_required
 def add_basica(request):
     if request.method == 'POST':
@@ -41,12 +50,6 @@ def add_basica(request):
     else:
         form = InformacionBasicaForm()
     return render(request, 'forms/add_basica.html', {'form': form})
-
-#READ ver_inicio:
-#@login_required
-def ver_inicio(request):
-    basicas = InformacionBasica.objects.all()
-    return render(request, 'ver_inicio.html', {'basicas': basicas})
 
 #READ ver_basica:
 #@login_required
@@ -134,7 +137,7 @@ def eliminar_cartera(request, pk):
         except Exception as e:
             messages.error(request, f'Error al eliminar la cartera: {str(e)}')
         return redirect('ver_cartera')
-    return render(request, 'forms/eliminar_cartera.html', {'cartera': cartera})
+    return render(request, 'forms/eliminar_cartera.html', {'cartera': cartera}) """
 
 #LOGOUT:
 def logout_session(request):
