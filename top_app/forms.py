@@ -38,17 +38,16 @@ class CarteraNivelacionForm(forms.ModelForm):
         cota_inicial = cleaned_data.get('cota_inicial')
         cota_calculada = cleaned_data.get('cota_calculada')
 
-        # Validaciones basadas en tipo de punto
         if tipo_punto == 'BM':
             if cota_inicial is None:
                 self.add_error('cota_inicial', 'Para el tipo de punto BM, la cota inicial es obligatoria.')
-            elif altura_instrumental is None and vista_mas is not None:
+            if altura_instrumental is None and cota_inicial is not None and vista_mas is not None:
                 cleaned_data['altura_instrumental'] = cota_inicial + vista_mas
 
         elif tipo_punto == 'Delta':
             if vista_menos is None:
                 self.add_error('vista_menos', 'Para el tipo de punto Delta, la vista (-) es obligatoria.')
-            elif cota_calculada is None and altura_instrumental is not None:
+            if cota_calculada is None and altura_instrumental is not None and vista_menos is not None:
                 cleaned_data['cota_calculada'] = altura_instrumental - vista_menos
 
         elif tipo_punto == 'Cambio':
@@ -56,9 +55,9 @@ class CarteraNivelacionForm(forms.ModelForm):
                 self.add_error('vista_mas', 'Para el tipo de punto Cambio, la vista (+) es obligatoria.')
             if vista_menos is None:
                 self.add_error('vista_menos', 'Para el tipo de punto Cambio, la vista (-) también es obligatoria.')
-            if altura_instrumental is None and cota_calculada is not None:
+            if altura_instrumental is None and cota_calculada is not None and vista_mas is not None:
                 cleaned_data['altura_instrumental'] = cota_calculada + vista_mas
-            if cota_calculada is None and altura_instrumental is not None:
+            if cota_calculada is None and altura_instrumental is not None and vista_menos is not None:
                 cleaned_data['cota_calculada'] = altura_instrumental - vista_menos
 
         return cleaned_data

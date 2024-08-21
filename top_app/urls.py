@@ -15,5 +15,5 @@ urlpatterns = [
     path('ver_cartera/', views.ver_cartera, name='ver_cartera'),
     path('editar_cartera/<int:pk>/', views.editar_cartera, name='editar_cartera'),
     path('eliminar_cartera/<int:pk>/', views.eliminar_cartera, name='eliminar_cartera'),
-    path('logout_session/', views.logout_session, name='logout_session'),
+    path('logout_session/', views.logout_session, name="logout_session"),
 ]
