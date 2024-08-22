@@ -3,7 +3,7 @@
 <html>
 
 <head>
-  <title>AÃ±adir Cartera de NivelaciÃ³n</title>
+  <title>Añadir Cartera de Nivelación</title>
   <style>
     .hidden {
       display: none;
@@ -15,7 +15,16 @@
         event.preventDefault();
         let formIdx = document.querySelectorAll(".dynamic-form").length;
         let newForm = document.querySelector(".dynamic-form:first-of-type").cloneNode(true);
+
+        //Actualiza el índice de los nuevos campos:
         newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, formIdx);
+
+        //Limpia los valores de los inputs en el formulario clonado:
+        let inputs = newForm.querySelectorAll('input');
+        inputs.forEach(function (input) {
+          input.value = '';
+        });
+
         document.getElementById("formset-container").appendChild(newForm);
         newForm.querySelector(".delete").classList.remove("hidden");
       });
@@ -31,12 +40,10 @@
 </head>
 
 <body>
-  <h1>AÃ±adir Cartera de NivelaciÃ³n</h1>
+  <h1>Añadir Cartera de Nivelación</h1>
 
-  <form action="{% url 'add_cartera' basica_id %}" method="post">
+  <form action="{% url 'add_cartera' basica.id %}" method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-
     <table>
       <thead>
         <tr>
@@ -51,10 +58,7 @@
       </thead>
 
       <tbody id="formset-container">
-
-        {{ formset.management_form }}
         {% for form in formset %}
-
         <tr class="dynamic-form">
           <td>{{ form.tipo_punto }}</td>
           <td>{{ form.punto }}</td>
@@ -63,7 +67,6 @@
           <td>{{ form.vista_menos }}</td>
           <td>{{ form.cota_inicial }}</td>
           <td>{{ form.cota_calculada }}</td>
-
           <td>
             {% if not form.instance.pk %}
             <a href="#" class="delete hidden">Eliminar</a>
@@ -71,17 +74,13 @@
             <a href="#" class="delete">Eliminar</a>
             {% endif %}
           </td>
-
         </tr>
-
         {% endfor %}
-
       </tbody>
-
     </table>
 
     <button type="button" id="add-more">Agregar Punto</button>
-    <button type="submit">Guardar</button>
+    <button class="delete-button" onclick="window.location='{% url 'ver_inicio' %}';">Guardar</button>
 
   </form>
 

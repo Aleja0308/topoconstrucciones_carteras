@@ -23,17 +23,15 @@
       <td>{{ basica.fecha }}</td>
 
       <td>
-        <button class="ver-button" onclick="window.location='{% url 'ver_cartera' %}';">Ver Cartera</button>
-        <button class="editar-button" onclick="window.location='{% url 'editar_basica' basica.pk %}';">Editar
+        <button class="ver-button" onclick="window.location='{% url 'ver_cartera' pk=basica.pk %}';">Ver
+          Cartera</button>
+        <button class="editar-button" onclick="window.location='{% url 'editar_basica' pk=basica.pk %}';">Editar
           Datos</button>
         <button class="eliminar-button"
-          onclick="window.location='{% url 'eliminar_basica' basica.pk %}';">Eliminar</button>
+          onclick="window.location='{% url 'eliminar_basica' pk=basica.pk %}';">Eliminar</button>
       </td>
-
     </tr>
-
     {% endfor %}
-
   </tbody>
 </table>
 

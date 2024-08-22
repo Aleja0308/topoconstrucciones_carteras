@@ -17,7 +17,7 @@ class InformacionBasicaForm(forms.ModelForm):
 class CarteraNivelacionForm(forms.ModelForm):
     class Meta:
         model = CarteraNivelacion
-        fields = ['tipo_punto', 'punto', 'altura_instrumental', 'vista_mas', 'vista_menos', 'cota_inicial', 'cota_calculada', 'basica']
+        fields = ['tipo_punto', 'punto', 'altura_instrumental', 'vista_mas', 'vista_menos', 'cota_inicial', 'cota_calculada']
         widgets = {
             'tipo_punto': forms.Select(attrs={'class': 'form-control'}),
             'punto': forms.TextInput(attrs={'class': 'form-control'}),
@@ -26,7 +26,6 @@ class CarteraNivelacionForm(forms.ModelForm):
             'vista_menos': forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
             'cota_inicial': forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
             'cota_calculada': forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
-            'basica': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean(self):

@@ -5,14 +5,12 @@
 <div class="container">
 
   <div class="alert">
-    
     <h2>¿Está seguro de eliminar a {{ basica.nombre }}?</h2>
 
     <form action="{% url 'eliminar_basica' basica.pk %}" method="post">
       {% csrf_token %}
-      <button type="submit">Eliminar</button>
+      <button type="submit" class="btn btn-danger">Eliminar</button>
     </form>
-
   </div>
 
   <button class="edit-button" onclick="window.location='{% url 'ver_inicio' %}';">Cancelar</button>
