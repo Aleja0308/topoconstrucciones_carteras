@@ -21,11 +21,11 @@ class CarteraNivelacion(models.Model):
     )
     tipo_punto = models.CharField(max_length=20, choices=ROLES_CHOICES)
     punto = models.CharField(max_length=20)
-    altura_instrumental = models.FloatField(blank=True, null=True)
-    vista_mas = models.FloatField(blank=True, null=True)
-    vista_menos = models.FloatField(blank=True, null=True)
-    cota_inicial = models.FloatField(blank=True, null=True)
-    cota_calculada = models.FloatField(blank=True, null=True)
+    altura_instrumental = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=2)
+    vista_mas = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=2)
+    vista_menos = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=2)
+    cota_inicial = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=2)
+    cota_calculada = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=2)
     basica = models.OneToOneField(InformacionBasica, on_delete = models.CASCADE, null=True)
 
     def __str__(self):

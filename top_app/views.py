@@ -38,11 +38,11 @@ def add_basica(request):
     if request.method == "POST":
         form = InformacionBasicaForm(request.POST)
         if form.is_valid():
-          basica_instance = form.save(commit=False)
-          basica_instance.save()
-          return redirect('add_cartera', basica_id=basica_instance.id)
+            basica_instance = form.save(commit=False)
+            basica_instance.save()
+            return redirect('add_cartera', basica_id=basica_instance.id)
     else:
-        form = InformacionBasicaForm() #Se crea un formulario vacío para solicitudes GET
+        form = InformacionBasicaForm()
     return render(request, 'forms/add_basica.html', {'form': form})
   
 #READ BASICA:
@@ -94,9 +94,8 @@ def add_cartera(request, basica_id):
 #READ CARTERA:
 #@login_required
 def ver_cartera(request, pk):
-    basica = get_object_or_404(InformacionBasica, pk=pk)
-    carteras = basica.carteras.all()
-    return render(request, 'ver_cartera.html', {'basica': basica, 'carteras': carteras})
+    cartera = CarteraNivelacion.objects.filter(basica_id=pk)
+    return render(request, 'ver_cartera.html', {'carteras': cartera})
 
 #UPDATE CARTERA:
 #@login_required
