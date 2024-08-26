@@ -30,8 +30,6 @@
       <td>
         <button class="edit-button"
           onclick="window.location='{% url 'editar_cartera' pk=cartera.pk %}';">Editar</button>
-        <button class="delete-button"
-          onclick="window.location='{% url 'eliminar_cartera' pk=cartera.pk %}';">Eliminar</button>
       </td>
     </tr>
     {% empty %}

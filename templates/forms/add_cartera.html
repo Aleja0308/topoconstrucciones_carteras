@@ -44,6 +44,7 @@
 
   <form action="{% url 'add_cartera' basica.id %}" method="post">
     {% csrf_token %}
+    {{ formset.management_form }}
     <table>
       <thead>
         <tr>
@@ -80,12 +81,8 @@
     </table>
 
     <button type="button" id="add-more">Agregar Punto</button>
+    <button type="submit" onclick="window.location='{% url 'ver_inicio' %}';">Guardar</button>
 
   </form>
 
-  <button class="delete-button" onclick="window.location='{% url 'ver_inicio' %}';">Guardar</button>
   <button class="delete-button" onclick="window.location='{% url 'index' %}';">Volver</button>
-
-</body>
-
-</html>
