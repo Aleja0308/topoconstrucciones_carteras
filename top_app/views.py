@@ -7,7 +7,7 @@ from .models import CarteraNivelacion
 from .forms import InformacionBasicaForm
 from .forms import CarteraNivelacionForm
 
-""" #LOGIN:
+#LOGIN:
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -17,11 +17,12 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('ver_inicio')
+            next_url = request.GET.get('next', 'ver_inicio')
+            return redirect(next_url)
         else:
-            return redirect('login')
+            return render(request, 'layouts/partials/login.html', {})
     else:
-        return render(request, 'layouts/partials/login.html', {}) """
+        return render(request, 'layouts/partials/login.html', {})
 
 #@login_required
 def index(request):

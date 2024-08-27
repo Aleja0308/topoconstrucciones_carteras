@@ -1,32 +1,37 @@
 {% load static %}
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
-    <link rel="stylesheet" href="{% static " styles_index_menu.css" %}">
-  </head>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nav</title>
+  <link rel="icon" href="{% static "images/topo_logo.png" %}" type="image/x-icon">
+  <link rel="stylesheet" href="{% static "styles_index_menu.css" %}">
+</head>
 
 <header class="header">
 
   <div class="logo_menu">
-    <img src="{% static 'images/topo_blanco_logo.png' %}" alt="logo_menu">
+    <img src="{% static "img/logo_negro.png" %}">
   </div>
 
-  <div class="button">
-    {% if user.is_authenticated %}
-    <div>
-      <a href="{% url 'logout_session' %}">Cerrar sesión</a>
+  <div class="menu-container">
+    <div class="menu">
+      <nav>
+        <a href="{% url 'index' %}" class="nav_menu">INICIO</a>
+        <a href="{% url 'add_basica' %}" class="nav_menu">NUEVO REGISTRO</a>
+        <a href="{% url 'ver_inicio' %}" class="nav_menu">HISTORIAL CARTERAS</a>
+      </nav>
     </div>
-    {% endif %}
   </div>
+
+    <div class="button_logout">
+      <form action="{% url 'logout_session' %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="button">CERRAR SESIÓN</button>
+      </form>
+    </div>
 
 </header>
-
-<div class="menu">
-  <nav>
-    <a href="{% url 'index' %}" class="nav_menu">INICIO</a>
-    <a href="{% url 'add_basica' %}" class="nav_menu">NUEVO REGISTRO</a>
-    <a href="{% url 'ver_inicio' %}" class="nav_menu">HISTORIAL CARTERAS</a>
-  </nav>
-</div>
