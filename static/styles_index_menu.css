@@ -3,10 +3,13 @@
   padding: 0;
   box-sizing: border-box;
 }
-  
+
+:root{
+  --main-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
 html{
   scroll-behavior: smooth;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 /* Estilos para la barra de navegación */
@@ -15,6 +18,7 @@ html{
   display: flex;
   justify-content: space-around;
   align-items: center;
+  font-family: var(--main-font-family);
 }
   
 .logo_menu img{
@@ -23,6 +27,7 @@ html{
   
 .button_logout{
   display: flex;
+  font-family: var(--main-font-family);
 }
 
 .button{
@@ -47,6 +52,7 @@ html{
 .menu-container{
   display: flex;
   justify-content: center;
+  font-family: var(--main-font-family);
 }
 
 .menu{
@@ -83,5 +89,66 @@ html{
 @media (max-width: 768px) {
   .menu {
      margin: 10px auto;
+  }
+}
+
+/* Carrusel de imágenes de fondo */
+.carousel-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.carousel-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  animation: fade 30s infinite;
+  opacity: 0;
+}
+
+.carousel-image:nth-child(1) {
+  background-image: url("img/construccion.jpg");
+  animation-delay: 0s;
+}
+
+.carousel-image:nth-child(2) {
+  background-image: url("img/spt.jpg");
+  animation-delay: 6s;
+}
+
+.carousel-image:nth-child(3) {
+  background-image: url("img/geotecnia.jpg");
+  animation-delay: 12s;
+}
+
+.carousel-image:nth-child(4) {
+  background-image: url("img/deteccionenterrados.jpg");
+  animation-delay: 18s;
+}
+
+.carousel-image:nth-child(5) {
+  background-image: url("img/gpsantiguo.jpg");
+  animation-delay: 24s;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  10%, 30% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
   }
 }

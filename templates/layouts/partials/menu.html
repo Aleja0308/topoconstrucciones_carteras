@@ -6,26 +6,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nav</title>
-  <link rel="icon" href="{% static "images/topo_logo.png" %}" type="image/x-icon">
+  <link rel="icon" href="{% static "img/topo_logo.png" %}" type="image/x-icon">
   <link rel="stylesheet" href="{% static "styles_index_menu.css" %}">
 </head>
 
-<header class="header">
 
-  <div class="logo_menu">
-    <img src="{% static "img/logo_negro.png" %}">
-  </div>
+<body>
 
-  <div class="menu-container">
-    <div class="menu">
-      <nav>
-        <a href="{% url 'index' %}" class="nav_menu">INICIO</a>
-        <a href="{% url 'add_basica' %}" class="nav_menu">NUEVO REGISTRO</a>
-        <a href="{% url 'ver_inicio' %}" class="nav_menu">HISTORIAL CARTERAS</a>
-      </nav>
+  <header class="header">
+
+    <div class="logo_menu">
+      <img src="{% static "img/logo_blanco.png" %}">
     </div>
-  </div>
+
+    <div class="menu-container">
+      <div class="menu">
+        <nav>
+          <a href="{% url 'index' %}" class="nav_menu">INICIO</a>
+          <a href="{% url 'add_basica' %}" class="nav_menu">NUEVO REGISTRO</a>
+          <a href="{% url 'ver_inicio' %}" class="nav_menu">HISTORIAL CARTERAS</a>
+        </nav>
+      </div>
+    </div>
 
     <div class="button_logout">
       <form action="{% url 'logout_session' %}" method="POST">
@@ -34,4 +36,16 @@
       </form>
     </div>
 
-</header>
+  </header>
+
+  <div class="carousel-container">
+    <div class="carousel-image"></div>
+    <div class="carousel-image"></div>
+    <div class="carousel-image"></div>
+    <div class="carousel-image"></div>
+    <div class="carousel-image"></div>
+  </div>
+
+</body>
+
+</html>
