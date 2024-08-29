@@ -152,3 +152,31 @@ html{
     opacity: 0;
   }
 }
+
+/* Estilo de typewriter */
+
+.typewriter-container {
+  font-family: var(--main-font-family);
+  font-size: 2em;
+  color: #ffffff;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.typewriter-container span {
+  border-right: 2px solid #ffffff;
+  padding-right: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  animation: blink 0.7s step-end infinite;
+}
+
+@keyframes blink {
+  from, to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: #ffffff;
+  }
+}
