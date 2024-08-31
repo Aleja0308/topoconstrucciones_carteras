@@ -1,0 +1,93 @@
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom right, #f08326, #fde454 );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.header_logo{
+  display: flex;
+  justify-content: center;
+}
+
+.logo{
+  height: 90px;
+  align-items: center;
+}
+
+.text{
+  color: #ffffff;
+}
+
+.card-body {
+  background-color: #0000009c;
+  border: 1px solid #0000001a;
+  backdrop-filter: blur(5px);
+  padding: 8px 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 270px;
+}
+
+.info-label{
+  width: 50%;
+  padding: 30px;
+  color: #ffffff;
+  font-size:small;
+  font-weight: 700;
+  justify-content: center;
+  align-items: center;
+}
+
+.info-item {
+  text-align: left;
+  line-height: 50px;
+  width: 100%;
+  margin: 10px 0;
+  border-radius: 35px;
+  border-width: 2px;
+  border-style:groove;
+  border-image: linear-gradient(to left, rgb(255, 210, 63) 10%, rgba(240,131,38,1) 100%) 1; 
+  color: #ffffff;
+  background-clip: padding-box;
+}
+
+.button-container{
+  justify-content: center;
+  align-items: center;
+  gap: 100px;
+  padding: 20px;
+}
+
+.edit-button{
+  background-color:  #f08326;
+  color: #ffffff;
+  padding: 10px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  width: 49%;
+}
+
+.edit-button:hover {
+  background-color: #fde454;
+  color: #000000;
+}
+
+.delete-button{
+  background-color:  #f08326;
+  color: #ffffff;
+  padding: 10px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  width: 49%;
+}
+
+.delete-button:hover {
+  background-color: #fde454;
+  color: #000000;
+}

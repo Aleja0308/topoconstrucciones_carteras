@@ -11,13 +11,11 @@
 
 <body>
 
-  <header>
-    {% include "layouts/partials/menu.html" %}
-    {% include "layouts/partials/typewriter.html" %}
-  </header>
-  {% block content %}
+  <div class="typewriter-container">
+    <span id="typewriter"></span>
+  </div>
 
-  {% endblock %}
+  <script src="{% static 'typewriter.js' %}"></script>
 
 </body>
 
