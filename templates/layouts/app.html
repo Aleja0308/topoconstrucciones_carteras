@@ -5,8 +5,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Topoconstrucciones</title>
   <link rel="icon" href="{% static " images/topo_logo.png" %}" type="image/x-icon">
+  <script src="{% static " src/js/flowbite.min.js" %}"></script>
+  <link href="{% static " src/css/styles_index_menu.css" %}">
+  <link rel="stylesheet" href="{% static "src/css/output.css" %}">
+  <title>Topoconstrucciones</title>
+
 </head>
 
 <body>
@@ -14,10 +18,12 @@
   <header>
     {% include "layouts/partials/menu.html" %}
   </header>
-  {% block content %}
 
-  {% endblock %}
+  <main>
+    {% block content %}
 
+    {% endblock %}
+  </main>
 </body>
 
 </html>

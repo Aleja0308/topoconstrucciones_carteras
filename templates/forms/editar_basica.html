@@ -1,19 +1,44 @@
-{% extends "layouts/index.html" %}
+{% extends "layouts/app.html" %}
 
 {% block content %}
 
-<div>
+<h1 class="text-3xl font-black mb-6 text-center">
+    <span class="from-yellow-400 to-orange-600 text-transparent bg-clip-text bg-gradient-to-l">Editar Información Básica</span>
+</h1>
 
-  <h2>Editar Información Básica</h2>
-
-  <form method="post">
+<form class="max-w-md mx-auto bg-white dark:bg-gray-900 bg-opacity-90 p-6 rounded-lg shadow-lg" method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar cambios</button>
-  </form>
-
-  <button onclick="window.location='{% url 'ver_inicio' %}';">Cancelar</button>
-
-</div>
-
+    
+    <div class="relative z-0 w-full mb-5 group">
+        {{ form.nombre }}
+        <label for="nombre" class="peer-focus:font-medium absolute text-sm text-gray-700 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre</label>
+    </div>
+    <div class="relative z-0 w-full mb-5 group">
+        {{ form.ciudad }}
+        <label for="ciudad" class="peer-focus:font-medium absolute text-sm text-gray-700 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Ciudad</label>
+    </div>
+    <div class="relative z-0 w-full mb-5 group">
+        {{ form.lugar }}
+        <label for="lugar" class="peer-focus:font-medium absolute text-sm text-gray-700 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Lugar</label>
+    </div>
+    <div class="grid md:grid-cols-2 md:gap-6">
+        <div class="relative z-0 w-full mb-5 group">
+            {{ form.responsable }}
+            <label for="responsable" class="peer-focus:font-medium absolute text-sm text-gray-700 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Responsable</label>
+        </div>
+        <div class="relative z-0 w-full mb-5 group">
+            {{ form.fecha }}
+            <label for="fecha" class="peer-focus:font-medium absolute text-sm text-gray-700 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha</label>
+        </div>
+    </div>
+    <div class="grid md:grid-cols-1 md:gap-6">
+        <div class="relative z-0 w-full mb-5 group">
+            {{ form.descripcion }}
+            <label for="descripcion" class="peer-focus:font-medium absolute text-sm text-gray-700 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-0 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción</label>
+        </div>
+    </div>
+    <div>
+    <button type="submit" class="text-white bg-gradient-to-r from-yellow-400 to-orange-600 hover:from-yellow-500 hover:to-orange-700 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Guardar cambios</button>
+    <button type="button" onclick="window.location='{% url 'ver_inicio' %}';" class="text-white bg-gradient-to-r from-yellow-400 to-orange-600 hover:from-yellow-500 hover:to-orange-700 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Cancelar</button>
+</form>
 {% endblock %}

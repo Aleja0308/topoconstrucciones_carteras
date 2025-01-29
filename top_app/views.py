@@ -1,7 +1,9 @@
+from decimal import Decimal
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory
+from django.http import JsonResponse, HttpResponse
 from .models import InformacionBasica
 from .models import CarteraNivelacion
 from .forms import InformacionBasicaForm
@@ -31,20 +33,24 @@ def index(request):
 #@login_required
 def ver_inicio(request):
     basicas = InformacionBasica.objects.all()
-    return render(request, 'ver_inicio.html', {'basicas': basicas})
+    return render(request, 'ver_inicio.html',  {'basicas': basicas})
 
 #CREATE BASICA:
 #@login_required
 def add_basica(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         form = InformacionBasicaForm(request.POST)
         if form.is_valid():
-            basica_instance = form.save(commit=False)
-            basica_instance.save()
-            return redirect('add_cartera', basica_id=basica_instance.id)
+            # Guardar el registro en la base de datos
+            nueva_basica = form.save()
+
+            # Redirigir a la vista de agregar cartera, pasando el ID de `nueva_basica`
+            return redirect('add_cartera', pk=nueva_basica.id)
     else:
         form = InformacionBasicaForm()
+    
     return render(request, 'forms/add_basica.html', {'form': form})
+
   
 #READ BASICA:
 #@login_required
@@ -63,65 +69,131 @@ def editar_basica(request, pk):
             return redirect('ver_inicio')
     else:
         form = InformacionBasicaForm(instance=basica)
-    return render(request, 'forms/editar_basica.html', {'form': form, 'basica': basica})
+    return render(request, 'forms/editar_basica.html', {'form': form})
 
 #DELETE BASICA:
 #@login_required
 def eliminar_basica(request, pk):
-    basica = get_object_or_404(InformacionBasica, pk=pk)
     if request.method == "POST":
+        basica = get_object_or_404(InformacionBasica, pk=pk)
         basica.delete()
-        return redirect('ver_inicio')
-    return render(request, 'forms/eliminar_basica.html', {'basica': basica})
+        return JsonResponse({"success": True})
+    return redirect('historial_carteras')
 
 #CREATE CARTERA:
 #@login_required
-def add_cartera(request, basica_id):
-    basica = get_object_or_404(InformacionBasica, pk=basica_id)
-    CarteraNivelacionFormSet = formset_factory(CarteraNivelacionForm, extra=1)
-    if request.method == "POST":
-        formset = CarteraNivelacionFormSet(request.POST)
-        if formset.is_valid():
-            for form in formset:
-                cartera = form.save(commit=False)
-                cartera.basica = basica
-                cartera.calcular_cota()
-                cartera.save()
-            return redirect('ver_inicio', pk=basica.pk)
+def add_cartera(request, pk):
+    # Obtener el objeto de la cartera básica (InformacionBasica) relacionado
+    basica = get_object_or_404(InformacionBasica, pk=pk)
+
+    if request.method == 'POST':
+        # Crear el formulario y pasarlo con los datos POST
+        form = CarteraNivelacionForm(request.POST)
+
+        if form.is_valid():
+            # Obtener los datos del formulario
+            tipo_punto = form.cleaned_data.get('tipo_punto')
+            altura_instrumental = form.cleaned_data.get('altura_instrumental')
+            vista_mas = form.cleaned_data.get('vista_mas')
+            vista_menos = form.cleaned_data.get('vista_menos')
+            cota_inicial = form.cleaned_data.get('cota_inicial')
+            cota_calculada = form.cleaned_data.get('cota_calculada')
+
+            # Asignar 0.00 si los valores son vacíos
+            altura_instrumental = altura_instrumental if altura_instrumental else Decimal('0.00')
+            vista_mas = vista_mas if vista_mas else Decimal('0.00')
+            vista_menos = vista_menos if vista_menos else Decimal('0.00')
+            cota_inicial = cota_inicial if cota_inicial else Decimal('0.00')
+
+            # Guardar el primer punto BM
+            if tipo_punto == "BM":
+                CarteraNivelacion.objects.create(
+                    basica=basica,
+                    tipo_punto=tipo_punto,
+                    altura_instrumental=altura_instrumental,
+                    vista_mas=vista_mas,
+                    vista_menos=vista_menos,
+                    cota_inicial=cota_inicial
+                )
+
+            # Guardar el tipo de punto Delta
+            elif tipo_punto == "Delta":
+                if cota_inicial is None or vista_menos is None:
+                    form.add_error('cota_inicial', 'Para el tipo de punto Delta, la cota inicial y vista (-) son obligatorios.')
+                else:
+                    cota_calculada = altura_instrumental - vista_menos
+                    CarteraNivelacion.objects.create(
+                        basica=basica,
+                        tipo_punto=tipo_punto,
+                        altura_instrumental=altura_instrumental,
+                        vista_mas=vista_mas,
+                        vista_menos=vista_menos,
+                        cota_inicial=cota_inicial,
+                        cota_calculada=cota_calculada
+                    )
+
+            # Guardar el tipo de punto Cambio
+            elif tipo_punto == "Cambio":
+                if vista_mas is None or vista_menos is None:
+                    form.add_error('vista_mas', 'Para el tipo de punto Cambio, ambas vistas (+) y (-) son obligatorias.')
+                else:
+                    cota_calculada = altura_instrumental - vista_menos
+                    altura_instrumental = cota_calculada + vista_mas
+                    CarteraNivelacion.objects.create(
+                        basica=basica,
+                        tipo_punto=tipo_punto,
+                        altura_instrumental=altura_instrumental,
+                        vista_mas=vista_mas,
+                        vista_menos=vista_menos,
+                        cota_inicial=cota_inicial,
+                        cota_calculada=cota_calculada
+                    )
+
+            # Si el formulario es válido, redirigir a otra página o mostrar éxito
+            return render(request, 'index.html', {'basica': basica})
+
     else:
-        formset = CarteraNivelacionFormSet()
-    return render(request, 'forms/add_cartera.html', {'formset': formset, 'basica': basica})
+        form = CarteraNivelacionForm()
+
+    return render(request, 'forms/add_cartera.html', {'form': form, 'basica': basica})
+
+
+
 
 #READ CARTERA:
 #@login_required
 def ver_cartera(request, pk):
     cartera = CarteraNivelacion.objects.filter(basica_id=pk)
-    return render(request, 'ver_cartera.html', {'carteras': cartera})
+    basica = InformacionBasica.objects.get(pk=pk)
+    return render(request, 'ver_cartera.html', {'carteras': cartera, 'basica': basica})
 
 #UPDATE CARTERA:
 #@login_required
 def editar_cartera(request, pk):
+    # Asegúrate de obtener el objeto correctamente
     cartera = get_object_or_404(CarteraNivelacion, pk=pk)
+
     if request.method == "POST":
         form = CarteraNivelacionForm(request.POST, instance=cartera)
         if form.is_valid():
             cartera = form.save(commit=False)
             cartera.calcular_cota()
             cartera.save()
-            return redirect('ver_cartera', pk=cartera.basica.pk) 
+            # Asegúrate de redirigir con el pk correcto
+            return redirect('ver_cartera', pk=cartera.pk)
     else:
         form = CarteraNivelacionForm(instance=cartera)
-    return render(request, 'forms/editar_cartera.html', {'form': form})
+
+    return render(request, 'forms/editar_cartera.html', {'form': form, 'cartera': cartera})
 
 #DELETE CARTERA:
 #@login_required
 def eliminar_cartera(request, pk):
-    cartera = get_object_or_404(CarteraNivelacion, pk=pk)
-    if request.method == "POST":
-        basica_pk = cartera.basica.pk
-        cartera.delete()
-        return redirect('ver_inicio', pk=basica_pk)
-    return render(request, 'forms/eliminar_cartera.html', {'cartera': cartera})
+    if request.method == 'POST':  # Verifica que sea una solicitud POST
+        cartera = get_object_or_404(CarteraNivelacion, pk=pk)  # Obtén el objeto o devuelve 404
+        cartera.delete()  # Elimina el objeto
+        return JsonResponse({'success': True})  # Devuelve una respuesta JSON de éxito
+    return JsonResponse({'error': 'Método no permitido'}, status=405)  # Si no es POST, responde con error
 
 #LOGOUT:
 #@login_required

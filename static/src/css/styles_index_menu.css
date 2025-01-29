@@ -114,27 +114,27 @@ html{
 }
 
 .carousel-image:nth-child(1) {
-  background-image: url("img/construccion.jpg");
+  background-image: url("../../img/construccion.jpg");
   animation-delay: 0s;
 }
 
 .carousel-image:nth-child(2) {
-  background-image: url("img/spt.jpg");
+  background-image: url("../../img/spt.jpg");
   animation-delay: 6s;
 }
 
 .carousel-image:nth-child(3) {
-  background-image: url("img/geotecnia.jpg");
+  background-image: url("../../img/geotecnia.jpg");
   animation-delay: 12s;
 }
 
 .carousel-image:nth-child(4) {
-  background-image: url("img/deteccionenterrados.jpg");
+  background-image: url("../../img/deteccionenterrados.jpg");
   animation-delay: 18s;
 }
 
 .carousel-image:nth-child(5) {
-  background-image: url("img/gpsantiguo.jpg");
+  background-image: url("../../img/gpsantiguo.jpg");
   animation-delay: 24s;
 }
 

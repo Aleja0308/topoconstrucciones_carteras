@@ -6,21 +6,48 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agregar Información Básica</title>
-  <link rel="stylesheet" href="{% static "styles_add_basica.css" %}">
+  <link rel="stylesheet" href="{% static "src/css/output.css" %}">
+  {% comment %} <link rel="stylesheet" href="{% static "src/css/styles_add_basica.css" %}"> {% endcomment %}
 </head>
 
-<body>
-
-  <h1>Añadir Información Básica</h1>
-
-  <form action="{% url 'add_basica' %}" method="post">
+<body class="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800 bg-gradient-to-l from-yellow-400 to-orange-600">
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Añadir Información Básica</h1>
+  <form class="max-w-md mx-auto bg-white dark:bg-gray-900 bg-opacity-90 p-6 rounded-lg shadow-lg" action="{% url 'add_basica' %}" method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar</button>
+    
+    <div class="relative z-0 w-full mb-5 group">
+      <input type="text" name="nombre" id="nombre" class="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-700 appearance-none dark:text-white dark:border-gray-500 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+      <label for="nombre" class="peer-focus:font-medium absolute text-sm text-gray-700 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre</label>
+    </div>
+    <div class="relative z-0 w-full mb-5 group">
+      <input type="text" name="ciudad" id="ciudad" class="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-700 appearance-none dark:text-white dark:border-gray-500 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+      <label for="ciudad" class="peer-focus:font-medium absolute text-sm text-gray-700 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Ciudad</label>
+    </div>
+    <div class="relative z-0 w-full mb-5 group">
+      <input type="text" name="lugar" id="lugar" class="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-700 appearance-none dark:text-white dark:border-gray-500 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+      <label for="lugar" class="peer-focus:font-medium absolute text-sm text-gray-700 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Lugar</label>
+    </div>
+    <div class="grid md:grid-cols-2 md:gap-6">
+      <div class="relative z-0 w-full mb-5 group">
+        <input type="text" name="responsable" id="responsable" class="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-700 appearance-none dark:text-white dark:border-gray-500 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+        <label for="responsable" class="peer-focus:font-medium absolute text-sm text-gray-700 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Responsable</label>
+      </div>
+      <div class="relative z-0 w-full mb-5 group">
+        <input type="date" name="fecha" id="fecha" class="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-700 appearance-none dark:text-white dark:border-gray-500 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+        <label for="fecha" class="peer-focus:font-medium absolute text-sm text-gray-700 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha</label>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-1 md:gap-6">
+      <div class="relative z-0 w-full mb-5 group">
+        <textarea name="descripcion" id="descripcion" class="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-700 appearance-none dark:text-white dark:border-gray-500 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required></textarea>
+        <label for="descripcion" class="peer-focus:font-medium absolute text-sm text-gray-700 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-0 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción</label>
+      </div>
+    </div>
+    <button type="submit" class="text-white bg-gradient-to-r from-yellow-400 to-orange-600 hover:from-yellow-500 hover:to-orange-700 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Guardar</button>
+    <button class="text-white bg-gradient-to-r from-yellow-400 to-orange-600 hover:from-yellow-500 hover:to-orange-700 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" onclick="window.location='{% url 'index' %}';">Cancelar</button>
+
   </form>
-
-  <button class="inicio-button" onclick="window.location='{% url 'index' %}';">Cancelar</button>
-
 </body>
+
 
 </html>

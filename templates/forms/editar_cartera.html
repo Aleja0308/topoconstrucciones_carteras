@@ -6,26 +6,74 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Editar Cartera</title>
-  <link rel="stylesheet" href="{% static '' %}">
+  <link rel="stylesheet" href="{% static '/src/css/output.css' %}">
 </head>
 
-<body>
+<body class="bg-gray-100">
 
-  <h1>Editar Cartera</h1>
+  <h1 class="text-3xl font-black mb-6 text-center mt-5">
+    <span class="from-yellow-400 to-orange-600 text-transparent bg-clip-text bg-gradient-to-l">
+      Editar Cartera de Nivelación
+    </span>
+  </h1>
 
-  <div class="form__update">
+  <!-- Botón para regresar -->
+  <button type="button" class="mx-16 text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-8" onclick="window.location='{% url 'ver_inicio' %}';">
+    Volver
+  </button>
 
+  <!-- Formulario de edición -->
+  <div class="mx-16 relative overflow-x-auto shadow-md sm:rounded-lg bg-opacity-90 bg-white dark:bg-gray-800 p-6">
+    <h2 class="text-xl font-semibold mb-4">Formulario de Edición</h2>
     <form action="{% url 'editar_cartera' cartera.pk %}" method="post">
       {% csrf_token %}
-      {{ form.as_div }}
-      <button type="submit">Guardar cambios</button>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {{ form.as_p }}
+      </div>
+      <div class="flex justify-end mt-6 space-x-4">
+        <button type="submit" class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition">
+          Guardar cambios
+        </button>
+        <button type="button" class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition" onclick="window.location='{% url 'ver_cartera' pk=cartera.pk %}';">
+          Cancelar
+        </button>
+      </div>
     </form>
-
-    <div class="action-buttons">
-      <button class="cancel-button" onclick="window.location='{% url 'ver_cartera' %}';">Cancelar</button>
-    </div>
-
   </div>
+
+  <!-- Tabla del registro editable -->
+  <div class="mx-16 relative overflow-x-auto shadow-md sm:rounded-lg bg-opacity-90 bg-white dark:bg-gray-800 mt-10">
+    <h2 class="text-xl font-semibold mb-4">Detalles del Punto Seleccionado</h2>
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+      <thead class="text-xs text-white uppercase bg-amber-500 dark:bg-amber-700">
+        <tr>
+          <th scope="col" class="px-6 py-3">Tipo Punto</th>
+          <th scope="col" class="px-6 py-3">Punto</th>
+          <th scope="col" class="px-6 py-3">Altura Instrumental</th>
+          <th scope="col" class="px-6 py-3">Vista (+)</th>
+          <th scope="col" class="px-6 py-3">Vista (-)</th>
+          <th scope="col" class="px-6 py-3">Cota Inicial</th>
+          <th scope="col" class="px-6 py-3">Cota Calculada</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="bg-white border-b hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+          <td class="px-6 py-4">{{ cartera.tipo_punto }}</td>
+          <td class="px-6 py-4">{{ cartera.punto }}</td>
+          <td class="px-6 py-4">{{ cartera.altura_instrumental }}</td>
+          <td class="px-6 py-4">{{ cartera.vista_mas }}</td>
+          <td class="px-6 py-4">{{ cartera.vista_menos }}</td>
+          <td class="px-6 py-4">{{ cartera.cota_inicial }}</td>
+          <td class="px-6 py-4">{{ cartera.cota_calculada }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+
+</html>
+
 
 </body>
 

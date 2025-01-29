@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'compressor',
     'top_app',
 ]
 
@@ -65,7 +66,7 @@ DATABASES = {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'topo_cartera',
             'USER': 'root',
-            'PASSWORD': 'aleja2001',
+            'PASSWORD': '0420193240pipe',
             'HOST': 'localhost',
             'PORT': '3306',
         }
@@ -107,9 +108,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+COMPRESS_ROOT = BASE_DIR / 'static'
+
+COMPRESS_ENABLED = True
+
+STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

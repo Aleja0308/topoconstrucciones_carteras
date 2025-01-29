@@ -6,12 +6,44 @@ class InformacionBasicaForm(forms.ModelForm):
         model = InformacionBasica
         fields = ['nombre', 'ciudad', 'lugar', 'responsable', 'fecha', 'descripcion']
         widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'ciudad': forms.TextInput(attrs={'class': 'form-control'}),
-            'lugar': forms.TextInput(attrs={'class': 'form-control'}),
-            'responsable': forms.TextInput(attrs={'class': 'form-control'}),
-            'fecha': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'descripcion': forms.Textarea(attrs={'class': 'form-control'}),
+            'nombre': forms.TextInput(attrs={
+                'class': 'block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-700 appearance-none dark:text-white dark:border-gray-500 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer',
+                'placeholder': ' ',
+                'required': True,
+                'id': 'nombre'
+            }),
+            'ciudad': forms.TextInput(attrs={
+                'class': 'block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-700 appearance-none dark:text-white dark:border-gray-500 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer',
+                'placeholder': ' ',
+                'required': True,
+                'id': 'ciudad'
+            }),
+            'lugar': forms.TextInput(attrs={
+                'class': 'block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-700 appearance-none dark:text-white dark:border-gray-500 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer',
+                'placeholder': ' ',
+                'required': True,
+                'id': 'lugar'
+            }),
+            'responsable': forms.TextInput(attrs={
+                'class': 'block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-700 appearance-none dark:text-white dark:border-gray-500 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer',
+                'placeholder': ' ',
+                'required': True,
+                'id': 'responsable'
+            }),
+            'fecha': forms.DateInput(attrs={
+                'class': 'block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-700 appearance-none dark:text-white dark:border-gray-500 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer',
+                'placeholder': ' ',
+                'required': True,
+                'id': 'fecha'
+            }),
+            'descripcion': forms.Textarea(attrs={
+                'class': 'block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-700 appearance-none dark:text-white dark:border-gray-500 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer',
+                'placeholder': ' ',
+                'required': True,
+                'id': 'descripcion',
+                'rows': 5,
+                'cols': 50
+            }),
         }
 
 class CarteraNivelacionForm(forms.ModelForm):
@@ -19,13 +51,13 @@ class CarteraNivelacionForm(forms.ModelForm):
         model = CarteraNivelacion
         fields = ['tipo_punto', 'punto', 'altura_instrumental', 'vista_mas', 'vista_menos', 'cota_inicial', 'cota_calculada']
         widgets = {
-            'tipo_punto': forms.Select(attrs={'class': 'form-control'}),
-            'punto': forms.TextInput(attrs={'class': 'form-control'}),
-            'altura_instrumental': forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
-            'vista_mas': forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
-            'vista_menos': forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
-            'cota_inicial': forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
-            'cota_calculada': forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
+            'tipo_punto': forms.Select(attrs={'class': 'w-full p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-indigo-400 dark:focus:border-indigo-400'}),
+            'punto': forms.TextInput(attrs={'class': 'w-full p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-indigo-400 dark:focus:border-indigo-400'}),
+            'altura_instrumental': forms.NumberInput(attrs={'class': 'w-full p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-indigo-400 dark:focus:border-indigo-400', 'step': 'any'}),
+            'vista_mas': forms.NumberInput(attrs={'class': 'w-full p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-indigo-400 dark:focus:border-indigo-400', 'step': 'any'}),
+            'vista_menos': forms.NumberInput(attrs={'class': 'w-full p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-indigo-400 dark:focus:border-indigo-400', 'step': 'any'}),
+            'cota_inicial': forms.NumberInput(attrs={'class': 'w-full p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-indigo-400 dark:focus:border-indigo-400', 'step': 'any'}),
+            'cota_calculada': forms.NumberInput(attrs={'class': 'w-full p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-indigo-400 dark:focus:border-indigo-400', 'step': 'any'}),
         }
 
     def clean(self):
@@ -37,6 +69,19 @@ class CarteraNivelacionForm(forms.ModelForm):
         cota_inicial = cleaned_data.get('cota_inicial')
         cota_calculada = cleaned_data.get('cota_calculada')
 
+        # Convierte los valores a Decimal si no son None
+        if altura_instrumental is not None:
+            altura_instrumental = Decimal(altura_instrumental)
+        if vista_mas is not None:
+            vista_mas = Decimal(vista_mas)
+        if vista_menos is not None:
+            vista_menos = Decimal(vista_menos)
+        if cota_inicial is not None:
+            cota_inicial = Decimal(cota_inicial)
+        if cota_calculada is not None:
+            cota_calculada = Decimal(cota_calculada)
+
+        # Validaciones y cálculos
         if tipo_punto == 'BM':
             if cota_inicial is None:
                 self.add_error('cota_inicial', 'Para el tipo de punto BM, la cota inicial es obligatoria.')

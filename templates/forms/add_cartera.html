@@ -1,88 +1,132 @@
 {% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static 'src/css/output.css' %}">
   <title>Añadir Cartera de Nivelación</title>
-  <style>
-    .hidden {
-      display: none;
-    }
-  </style>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      document.getElementById("add-more").addEventListener("click", function (event) {
-        event.preventDefault();
-        let formIdx = document.querySelectorAll(".dynamic-form").length;
-        let newForm = document.querySelector(".dynamic-form:first-of-type").cloneNode(true);
-
-        //Actualiza el índice de los nuevos campos:
-        newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, formIdx);
-
-        //Limpia los valores de los inputs en el formulario clonado:
-        let inputs = newForm.querySelectorAll('input');
-        inputs.forEach(function (input) {
-          input.value = '';
-        });
-
-        document.getElementById("formset-container").appendChild(newForm);
-        newForm.querySelector(".delete").classList.remove("hidden");
-      });
-
-      document.addEventListener("click", function (event) {
-        if (event.target.classList.contains("delete")) {
-          event.preventDefault();
-          event.target.closest(".dynamic-form").remove();
-        }
-      });
-    });
-  </script>
 </head>
 
-<body>
-  <h1>Añadir Cartera de Nivelación</h1>
+<body class="bg-gray-100">
+  <h1 class="text-3xl font-black mb-6 text-center mt-5">
+    <span class="from-yellow-400 to-orange-600 text-transparent bg-clip-text bg-gradient-to-l">Añadir Cartera de Nivelación</span>
+  </h1>
 
-  <form action="{% url 'add_cartera' basica.id %}" method="post">
-    {% csrf_token %}
-    {{ formset.management_form }}
-    <table>
-      <thead>
-        <tr>
-          <th>Tipo Punto</th>
-          <th>Punto</th>
-          <th>Altura Instrumental</th>
-          <th>Vista (+)</th>
-          <th>Vista (-)</th>
-          <th>Cota BM</th>
-          <th>Cota</th>
-        </tr>
-      </thead>
+  <div class="container mx-auto p-4">
+    <!-- Botón Volver -->
+    <button type="button" class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="window.location='{% url 'ver_inicio' %}';">
+      Volver
+    </button>
 
-      <tbody id="formset-container">
-        {% for form in formset %}
-        <tr class="dynamic-form">
-          <td>{{ form.tipo_punto }}</td>
-          <td>{{ form.punto }}</td>
-          <td>{{ form.altura_instrumental }}</td>
-          <td>{{ form.vista_mas }}</td>
-          <td>{{ form.vista_menos }}</td>
-          <td>{{ form.cota_inicial }}</td>
-          <td>{{ form.cota_calculada }}</td>
-          <td>
-            {% if not form.instance.pk %}
-            <a href="#" class="delete hidden">Eliminar</a>
-            {% else %}
-            <a href="#" class="delete">Eliminar</a>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <!-- Formulario para el primer punto BM -->
+    <div id="bm-section" class="relative overflow-x-auto shadow-md sm:rounded-lg bg-opacity-90 bg-white dark:bg-gray-800">
+      <form id="bm-form" method="post">
+        {% csrf_token %}
+        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <thead class="text-xs text-white uppercase bg-amber-500 dark:bg-amber-700">
+            <tr>
+              <th scope="col" class="px-6 py-3">Tipo Punto</th>
+              <th scope="col" class="px-6 py-3">Punto</th>
+              <th scope="col" class="px-6 py-3">Altura Instrumental</th>
+              <th scope="col" class="px-6 py-3">Vista (+)</th>
+              <th scope="col" class="px-6 py-3">Vista (-)</th>
+              <th scope="col" class="px-6 py-3">Cota Inicial</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="dynamic-form">
+              <td class="px-6 py-4">
+                <select name="tipo_punto" class="tipo-punto px-2 py-1 border rounded">
+                  <option value="BM">BM</option>
+                </select>
+              </td>
+              <td class="px-6 py-4">
+                <input type="text" name="punto" class="punto px-2 py-1 border rounded" value="BM001" readonly>
+              </td>
+              <td class="px-6 py-4">
+                <input type="number" name="altura_instrumental" class="altura-instrumental px-2 py-1 border rounded" readonly>
+              </td>
+              <td class="px-6 py-4">
+                <input type="number" name="vista_mas" class="vista-mas px-2 py-1 border rounded">
+              </td>
+              <td class="px-6 py-4">
+                <input type="number" name="vista_menos" class="vista-menos px-2 py-1 border rounded" readonly>
+              </td>
+              <td class="px-6 py-4">
+                <input type="number" name="cota_inicial" class="cota-inicial px-2 py-1 border rounded">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="m-5 flex justify-between">
+          <button type="submit" class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
 
-    <button type="button" id="add-more">Agregar Punto</button>
-    <button type="submit" onclick="window.location='{% url 'ver_inicio' %}';">Guardar</button>
+    <!-- Tabla para puntos adicionales -->
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-opacity-90 bg-white dark:bg-gray-800 mt-6">
+      <form method="post">
+        {% csrf_token %}
+        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <thead class="text-xs text-white uppercase bg-amber-500 dark:bg-amber-700">
+            <tr>
+              <th scope="col" class="px-6 py-3">Tipo Punto</th>
+              <th scope="col" class="px-6 py-3">Punto</th>
+              <th scope="col" class="px-6 py-3">Altura Instrumental</th>
+              <th scope="col" class="px-6 py-3">Vista (+)</th>
+              <th scope="col" class="px-6 py-3">Vista (-)</th>
+              <th scope="col" class="px-6 py-3">Cota Inicial</th>
+            </tr>
+          </thead>
+          <tbody id="form-container">
+            {% for punto in puntos %}
+            <tr class="dynamic-form">
+              <td class="px-6 py-4">
+                <select name="tipo_punto" class="tipo-punto px-2 py-1 border rounded">
+                  <option value="Delta" {% if punto.tipo_punto == "Delta" %}selected{% endif %}>Delta</option>
+                  <option value="Cambio" {% if punto.tipo_punto == "Cambio" %}selected{% endif %}>Cambio</option>
+                </select>
+              </td>
+              <td class="px-6 py-4">
+                <input type="text" name="punto" class="punto px-2 py-1 border rounded" value="{{ punto.punto }}">
+              </td>
+              <td class="px-6 py-4">
+                <input type="number" name="altura_instrumental" class="altura-instrumental px-2 py-1 border rounded" value="{{ punto.altura_instrumental }}" readonly>
+              </td>
+              <td class="px-6 py-4">
+                <input type="number" name="vista_mas" class="vista-mas px-2 py-1 border rounded" value="{{ punto.vista_mas }}">
+              </td>
+              <td class="px-6 py-4">
+                <input type="number" name="vista_menos" class="vista-menos px-2 py-1 border rounded" value="{{ punto.vista_menos }}">
+              </td>
+              <td class="px-6 py-4">
+                <input type="number" name="cota_inicial" class="cota-inicial px-2 py-1 border rounded" value="{{ punto.cota_inicial }}">
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="m-5 flex justify-between">
+          <button type="submit" class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+            Guardar Puntos Adicionales
+          </button>
+        </div>
+      </form>
+    </div>
 
-  </form>
+    <!-- Botón para salir -->
+    <div class="m-5 flex justify-between">
+      <button type="button" id="exit-button" class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="window.location='{% url 'ver_inicio' %}';">
+        Salir
+      </button>
+    </div>
+  </div>
+</body>
 
-  <button class="delete-button" onclick="window.location='{% url 'index' %}';">Volver</button>
+</html>
