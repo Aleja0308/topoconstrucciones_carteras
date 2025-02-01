@@ -24,22 +24,10 @@ class CarteraNivelacion(models.Model):
     altura_instrumental = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=2)
     vista_mas = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=2)
     vista_menos = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=2)
-    cota_inicial = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=2)
-    cota_calculada = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=2)
+    cota = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=2)
     basica = models.ForeignKey(InformacionBasica, on_delete=models.CASCADE, related_name='carteras', default=1)
 
     def __str__(self):
         return f'{self.tipo_punto} - {self.punto}'
 
-    def calcular_cota(self):
-        # Lógica de cálculo dependiendo del tipo de punto
-        if self.tipo_punto == 'BM' and self.cota_inicial is not None and self.vista_mas is not None:
-            self.altura_instrumental = self.cota_inicial + self.vista_mas
-        elif self.tipo_punto == 'Delta' and self.altura_instrumental is not None and self.vista_menos is not None:
-            self.cota_calculada = self.altura_instrumental - self.vista_menos
-        elif self.tipo_punto == 'Cambio':
-            if self.altura_instrumental is not None and self.vista_menos is not None:
-                self.cota_calculada = self.altura_instrumental - self.vista_menos
-            if self.cota_calculada is not None and self.vista_mas is not None:
-                self.altura_instrumental = self.cota_calculada + self.vista_mas
-        self.save()
+    

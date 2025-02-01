@@ -26,14 +26,14 @@
       <form id="bm-form" method="post">
         {% csrf_token %}
         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead class="text-xs text-white uppercase bg-amber-500 dark:bg-amber-700">
+          <thead class="text-xs text-black uppercase bg-amber-500 dark:bg-amber-700">
             <tr>
               <th scope="col" class="px-6 py-3">Tipo Punto</th>
               <th scope="col" class="px-6 py-3">Punto</th>
               <th scope="col" class="px-6 py-3">Altura Instrumental</th>
               <th scope="col" class="px-6 py-3">Vista (+)</th>
               <th scope="col" class="px-6 py-3">Vista (-)</th>
-              <th scope="col" class="px-6 py-3">Cota Inicial</th>
+              <th scope="col" class="px-6 py-3">Cota</th>
             </tr>
           </thead>
           <tbody>
@@ -56,7 +56,7 @@
                 <input type="number" name="vista_menos" class="vista-menos px-2 py-1 border rounded" readonly>
               </td>
               <td class="px-6 py-4">
-                <input type="number" name="cota_inicial" class="cota-inicial px-2 py-1 border rounded">
+                <input type="number" name="cota" class="cota px-2 py-1 border rounded">
               </td>
             </tr>
           </tbody>
@@ -74,14 +74,14 @@
       <form method="post">
         {% csrf_token %}
         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead class="text-xs text-white uppercase bg-amber-500 dark:bg-amber-700">
+          <thead class="text-xs text-black uppercase bg-amber-500 dark:bg-amber-700">
             <tr>
               <th scope="col" class="px-6 py-3">Tipo Punto</th>
               <th scope="col" class="px-6 py-3">Punto</th>
               <th scope="col" class="px-6 py-3">Altura Instrumental</th>
               <th scope="col" class="px-6 py-3">Vista (+)</th>
               <th scope="col" class="px-6 py-3">Vista (-)</th>
-              <th scope="col" class="px-6 py-3">Cota Inicial</th>
+              <th scope="col" class="px-6 py-3">Cota</th>
             </tr>
           </thead>
           <tbody id="form-container">
@@ -106,7 +106,7 @@
                 <input type="number" name="vista_menos" class="vista-menos px-2 py-1 border rounded" value="{{ punto.vista_menos }}">
               </td>
               <td class="px-6 py-4">
-                <input type="number" name="cota_inicial" class="cota-inicial px-2 py-1 border rounded" value="{{ punto.cota_inicial }}">
+                <input type="number" name="cota" class="cota px-2 py-1 border rounded" value="{{ punto.cota }}">
               </td>
             </tr>
             {% endfor %}

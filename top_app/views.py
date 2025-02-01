@@ -96,14 +96,13 @@ def add_cartera(request, pk):
             altura_instrumental = form.cleaned_data.get('altura_instrumental')
             vista_mas = form.cleaned_data.get('vista_mas')
             vista_menos = form.cleaned_data.get('vista_menos')
-            cota_inicial = form.cleaned_data.get('cota_inicial')
-            cota_calculada = form.cleaned_data.get('cota_calculada')
+            cota = form.cleaned_data.get('cota')
 
             # Asignar 0.00 si los valores son vacíos
             altura_instrumental = altura_instrumental if altura_instrumental else Decimal('0.00')
             vista_mas = vista_mas if vista_mas else Decimal('0.00')
             vista_menos = vista_menos if vista_menos else Decimal('0.00')
-            cota_inicial = cota_inicial if cota_inicial else Decimal('0.00')
+            cota = cota if cota else Decimal('0.00')
 
             # Guardar el primer punto BM
             if tipo_punto == "BM":
@@ -113,23 +112,22 @@ def add_cartera(request, pk):
                     altura_instrumental=altura_instrumental,
                     vista_mas=vista_mas,
                     vista_menos=vista_menos,
-                    cota_inicial=cota_inicial
+                    cota=cota
                 )
 
             # Guardar el tipo de punto Delta
             elif tipo_punto == "Delta":
-                if cota_inicial is None or vista_menos is None:
-                    form.add_error('cota_inicial', 'Para el tipo de punto Delta, la cota inicial y vista (-) son obligatorios.')
+                if cota is None or vista_menos is None:
+                    form.add_error('cota', 'Para el tipo de punto Delta, la cota inicial y vista (-) son obligatorios.')
                 else:
-                    cota_calculada = altura_instrumental - vista_menos
+                    cota = altura_instrumental - vista_menos
                     CarteraNivelacion.objects.create(
                         basica=basica,
                         tipo_punto=tipo_punto,
                         altura_instrumental=altura_instrumental,
                         vista_mas=vista_mas,
                         vista_menos=vista_menos,
-                        cota_inicial=cota_inicial,
-                        cota_calculada=cota_calculada
+                        cota=cota
                     )
 
             # Guardar el tipo de punto Cambio
@@ -137,20 +135,19 @@ def add_cartera(request, pk):
                 if vista_mas is None or vista_menos is None:
                     form.add_error('vista_mas', 'Para el tipo de punto Cambio, ambas vistas (+) y (-) son obligatorias.')
                 else:
-                    cota_calculada = altura_instrumental - vista_menos
-                    altura_instrumental = cota_calculada + vista_mas
+                    cota = altura_instrumental - vista_menos
+                    altura_instrumental = cota + vista_mas
                     CarteraNivelacion.objects.create(
                         basica=basica,
                         tipo_punto=tipo_punto,
                         altura_instrumental=altura_instrumental,
                         vista_mas=vista_mas,
                         vista_menos=vista_menos,
-                        cota_inicial=cota_inicial,
-                        cota_calculada=cota_calculada
+                        cota=cota
                     )
 
             # Si el formulario es válido, redirigir a otra página o mostrar éxito
-            return render(request, 'index.html', {'basica': basica})
+            return render(request, 'ver_basica.html', {'basica': basica})
 
     else:
         form = CarteraNivelacionForm()

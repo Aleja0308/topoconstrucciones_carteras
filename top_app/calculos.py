@@ -11,8 +11,8 @@ def main():
             if tipo_punto == 'Delta':
                 punto = input("Punto: ")
                 vista_menos = float(input("Vista (-): "))
-                cota_calculada = altura_instrumental - vista_menos
-                print(f"{punto}: Vista (-):{vista_menos} Cota:{cota_calculada}")
+                cota = altura_instrumental - vista_menos
+                print(f"{punto}: Vista (-):{vista_menos} Cota:{cota}")
             else:
                 vista_mas = None
             
@@ -20,9 +20,9 @@ def main():
                 punto = input("Punto: ")
                 vista_menos = float(input("Vista (-): "))
                 vista_mas = float(input("Vista (+): "))
-                cota_calculada = altura_instrumental - vista_menos
-                altura_instrumental = cota_calculada + vista_mas
-                print(f"{punto}: Altura instrumental:{altura_instrumental} Vista (+):{vista_mas} Cota:{cota_calculada}")
+                cota = altura_instrumental - vista_menos
+                altura_instrumental = cota + vista_mas
+                print(f"{punto}: Altura instrumental:{altura_instrumental} Vista (+):{vista_mas} Cota:{cota}")
      
             boton_agregar = input("¿Desea agregar otro punto? (s/n): ")
             if boton_agregar.lower() != 's':
