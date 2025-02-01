@@ -4,10 +4,12 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory
 from django.http import JsonResponse, HttpResponse
-from .models import InformacionBasica
+from .models import InformacionBasica, CarteraNivelacion, Punto, PuntoBM, PuntoDelta, PuntoCambio
 from .models import CarteraNivelacion
 from .forms import InformacionBasicaForm
 from .forms import CarteraNivelacionForm
+import json
+import traceback
 
 #LOGIN:
 def login_view(request):
@@ -154,7 +156,40 @@ def add_cartera(request, pk):
 
     return render(request, 'forms/add_cartera.html', {'form': form, 'basica': basica})
 
+#GUARDAR PUNTO BM
 
+def guardar_punto_bm(request, cartera_id):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            print(data)
+            # Crear formulario con los datos recibidos
+            cartera = CarteraNivelacion.objects.get(id=cartera_id)
+
+            punto_bm = PuntoBM.objects.create(
+                vista_mas=Decimal(data.get("vista_mas")) if data.get("vista_mas") else None,
+                cota_inicial=Decimal(data.get("cota")) if data.get("cota") else None
+            )
+
+            punto = Punto.objects.create(
+                tipo_punto=1,
+                punto = data.get("punto"),
+                registro_id = punto_bm.id,
+                cartera_nivelacion_id = cartera.id
+            )
+
+            return JsonResponse({
+                "success": True,
+                "message": "Punto BM guardado correctamente",
+                "punto_id": punto.id
+            }, status=201)
+            
+        except Exception as e:
+            return JsonResponse({
+                "success": False,
+                "message": str(e) + "\n" + traceback.format_exc()
+            }, status=500)
+    return JsonResponse({"success": False, "message": "Método no permitido"}, status=405)
 
 
 #READ CARTERA:
