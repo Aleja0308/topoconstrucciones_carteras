@@ -1,5 +1,5 @@
 from django import forms
-from .models import InformacionBasica, CarteraNivelacion, Punto, PuntoBM, PuntoDelta, PuntoCambio
+from .models import InformacionBasica, CarteraNivelacion, TipoPunto, Punto, PuntoBM, PuntoDelta, PuntoCambio
 from decimal import Decimal
 
 class InformacionBasicaForm(forms.ModelForm):
@@ -57,8 +57,8 @@ class PuntoForm(forms.ModelForm):
         }
 
 class CarteraNivelacionForm(forms.ModelForm):
-    tipo_punto = forms.ChoiceField(
-        choices=Punto.TIPO_PUNTO_CHOICES,
+    tipo_punto = forms.ModelChoiceField(
+        queryset=TipoPunto.objects.all(),
         widget=forms.Select(attrs={'class': 'w-full p-2 rounded-md border'})
     )
     punto = forms.CharField(

@@ -4,7 +4,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory
 from django.http import JsonResponse, HttpResponse
-from .models import InformacionBasica, CarteraNivelacion, Punto, PuntoBM, PuntoDelta, PuntoCambio
+from .models import InformacionBasica, CarteraNivelacion, TipoPunto, Punto, PuntoBM, PuntoDelta, PuntoCambio
 from .models import CarteraNivelacion
 from .forms import InformacionBasicaForm
 from .forms import CarteraNivelacionForm
@@ -163,16 +163,25 @@ def guardar_punto_bm(request, cartera_id):
         try:
             data = json.loads(request.body)
             print(data)
+            print("ID de cartera recibido:", cartera_id)
             # Crear formulario con los datos recibidos
-            cartera = CarteraNivelacion.objects.get(id=cartera_id)
+            basica = InformacionBasica.objects.get(id=cartera_id)
+
+            cartera = CarteraNivelacion.objects.create(
+                id=basica.id,
+                basica_id = basica.id
+            )
 
             punto_bm = PuntoBM.objects.create(
                 vista_mas=Decimal(data.get("vista_mas")) if data.get("vista_mas") else None,
                 cota_inicial=Decimal(data.get("cota")) if data.get("cota") else None
             )
 
+            cartera.cota = punto_bm.cota_inicial
+            cartera.altura_instrumental = punto_bm.vista_mas + punto_bm.cota_inicial
+            cartera.save()
             punto = Punto.objects.create(
-                tipo_punto=1,
+                tipo_punto_id=1,
                 punto = data.get("punto"),
                 registro_id = punto_bm.id,
                 cartera_nivelacion_id = cartera.id
@@ -181,16 +190,101 @@ def guardar_punto_bm(request, cartera_id):
             return JsonResponse({
                 "success": True,
                 "message": "Punto BM guardado correctamente",
-                "punto_id": punto.id
+                "punto": punto.punto,
+                "alturaInstrumental": cartera.altura_instrumental,
+                "vistaMas": punto_bm.vista_mas,
+                "cota": cartera.cota
             }, status=201)
             
         except Exception as e:
+            print("Error:", e)  # Imprimir el error en la terminal
+            print("Traceback:", traceback.format_exc())  # Ver detalles del error
             return JsonResponse({
                 "success": False,
                 "message": str(e) + "\n" + traceback.format_exc()
             }, status=500)
     return JsonResponse({"success": False, "message": "Método no permitido"}, status=405)
 
+
+#GUARDAR PUNTO DELTA
+def guardar_punto_delta(request, cartera_id):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            cartera = CarteraNivelacion.objects.get(id=cartera_id)
+
+            punto_delta = PuntoDelta.objects.create(
+                vista_menos=Decimal(data.get("vista_menos")) if data.get("vista_menos") else None,
+            )
+
+            cartera.cota = cartera.altura_instrumental - punto_delta.vista_menos
+            cartera.save()
+            punto = Punto.objects.create(
+                tipo_punto_id=2,
+                punto = data.get("punto"),
+                registro_id = punto_delta.id,
+                cartera_nivelacion_id = cartera.id
+            )
+
+            return JsonResponse({
+                "success": True,
+                "message": "Punto Delta guardado correctamente",
+                "punto": punto.punto,
+                "alturaInstrumental": cartera.altura_instrumental,
+                "vistaMenos": punto_delta.vista_menos,
+                "cota": cartera.cota
+            }, status=201)
+            
+        except Exception as e:
+            print("Error:", e)  # Imprimir el error en la terminal
+            print("Traceback:", traceback.format_exc())  # Ver detalles del error
+            return JsonResponse({
+                "success": False,
+                "message": str(e) + "\n" + traceback.format_exc()
+            }, status=500)
+    return JsonResponse({"success": False, "message": "Método no permitido"}, status=405)
+
+#GUARDAR PUNTO CAMBIO
+def guardar_punto_cambio(request, cartera_id):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            cartera = CarteraNivelacion.objects.get(id=cartera_id)
+            punto_cambio = PuntoCambio.objects.create(
+                vista_mas=Decimal(data.get("vista_mas")) if data.get("vista_mas") else None,
+                vista_menos=Decimal(data.get("vista_menos")) if data.get("vista_menos") else None,
+            )
+
+            cartera.cota = cartera.altura_instrumental - punto_cambio.vista_menos
+            cartera.altura_instrumental = cartera.cota + punto_cambio.vista_mas
+            cartera.save()
+
+            punto = Punto.objects.create(
+                tipo_punto_id=3,
+                punto = data.get("punto"),
+                registro_id = punto_cambio.id,
+                cartera_nivelacion_id = cartera.id
+            )
+
+            return JsonResponse({
+                "success": True,
+                "message": "Punto Cambio guardado correctamente",
+                "punto": punto.punto,
+                "alturaInstrumental": cartera.altura_instrumental,
+                "vistaMas": punto_cambio.vista_mas,
+                "vistaMenos": punto_cambio.vista_menos,
+                "cota": cartera.cota
+            }, status=201)
+            
+        except Exception as e:
+            print("Error:", e)  # Imprimir el error en la terminal
+            print("Traceback:", traceback.format_exc())  # Ver detalles del error
+            return JsonResponse({
+                "success": False,
+                "message": str(e) + "\n" + traceback.format_exc()
+            }, status=500)
+    return JsonResponse({"success": False, "message": "Método no permitido"}, status=405)
 
 #READ CARTERA:
 #@login_required
