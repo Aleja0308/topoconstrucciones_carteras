@@ -1,10 +1,10 @@
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory
 from django.http import JsonResponse, HttpResponse
-from .models import InformacionBasica, CarteraNivelacion, TipoPunto, Punto, PuntoBM, PuntoDelta, PuntoCambio
+from .models import InformacionBasica, CarteraNivelacion, Puntos
 from .models import CarteraNivelacion
 from .forms import InformacionBasicaForm
 from .forms import CarteraNivelacionForm
@@ -164,45 +164,95 @@ def guardar_punto_bm(request, cartera_id):
             data = json.loads(request.body)
             print(data)
             print("ID de cartera recibido:", cartera_id)
-            # Crear formulario con los datos recibidos
+
+            # Intentar convertir vista_mas y cota_inicial a Decimal
+            try:
+                vista_mas = Decimal(data.get("vista_mas") or 0)
+            except InvalidOperation:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Error: Vista (+) no tiene un formato válido."
+                }, status=400)
+            try:
+                cota_inicial = Decimal(data.get("cota") or 0)
+            except InvalidOperation:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Error: Cota no tiene un formato válido."
+                }, status=400)
+            
+            if (vista_mas<=0):
+                return JsonResponse({
+                    "success": False,
+                    "message": "Error: Vista(+) debe ser positiva."
+                }, status=400)
+            
+            if (cota_inicial<=0):
+                return JsonResponse({
+                    "success": False,
+                    "message": "Error: Cota debe ser positiva."
+                }, status=400)
+
+            # Obtener la información básica
             basica = InformacionBasica.objects.get(id=cartera_id)
 
-            cartera = CarteraNivelacion.objects.create(
+            # Verificar si ya existe una cartera de nivelación
+            cartera, created = CarteraNivelacion.objects.get_or_create(
                 id=basica.id,
-                basica_id = basica.id
+                defaults={"basica_id": basica.id}
             )
 
-            punto_bm = PuntoBM.objects.create(
-                vista_mas=Decimal(data.get("vista_mas")) if data.get("vista_mas") else None,
-                cota_inicial=Decimal(data.get("cota")) if data.get("cota") else None
-            )
+            # Verificar si la cartera ya tiene un punto BM
+            existe_punto_bm = Puntos.objects.filter(
+                cartera_nivelacion_id=cartera.id, tipo_punto_id=1
+            ).exists()
+            
+            if existe_punto_bm:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Error: La cartera ya tiene un punto de tipo BM."
+                }, status=400)
 
-            cartera.cota = punto_bm.cota_inicial
-            cartera.altura_instrumental = punto_bm.vista_mas + punto_bm.cota_inicial
+
+            # Actualizar valores en la cartera y guardar
+            cartera.cota = cota_inicial
+            cartera.altura_instrumental = vista_mas + cota_inicial
             cartera.save()
-            punto = Punto.objects.create(
+
+            # Crear punto BM
+            punto_bm = Puntos.objects.create(
                 tipo_punto_id=1,
-                punto = data.get("punto"),
-                registro_id = punto_bm.id,
-                cartera_nivelacion_id = cartera.id
+                punto=data.get("punto"),
+                cartera_nivelacion_id=cartera.id,
+                vista_mas=vista_mas,
+                cota=cota_inicial,
+                altura_instrumental = cartera.altura_instrumental
             )
 
             return JsonResponse({
                 "success": True,
                 "message": "Punto BM guardado correctamente",
-                "punto": punto.punto,
+                "punto": punto_bm.punto,
                 "alturaInstrumental": cartera.altura_instrumental,
                 "vistaMas": punto_bm.vista_mas,
                 "cota": cartera.cota
             }, status=201)
-            
+
+        except InformacionBasica.DoesNotExist:
+            return JsonResponse({
+                "success": False,
+                "message": "Error: No se encontró la información básica con el ID proporcionado."
+            }, status=404)
+
         except Exception as e:
             print("Error:", e)  # Imprimir el error en la terminal
             print("Traceback:", traceback.format_exc())  # Ver detalles del error
             return JsonResponse({
                 "success": False,
-                "message": str(e) + "\n" + traceback.format_exc()
+                "message": f"Error inesperado: {str(e)}",
+                "traceback": traceback.format_exc()
             }, status=500)
+
     return JsonResponse({"success": False, "message": "Método no permitido"}, status=405)
 
 
@@ -211,30 +261,59 @@ def guardar_punto_delta(request, cartera_id):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
+            try:
+                vista_menos = Decimal(data.get("vista_menos") or 0)
+            except InvalidOperation:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Error: Vista (-) no tiene un formato válido."
+                }, status=400)
+
+            if (vista_menos<=0):
+                return JsonResponse({
+                    "success": False,
+                    "message": "Error: Vista(-) debe ser positiva."
+                }, status=400)
+
             cartera = CarteraNivelacion.objects.get(id=cartera_id)
 
-            punto_delta = PuntoDelta.objects.create(
-                vista_menos=Decimal(data.get("vista_menos")) if data.get("vista_menos") else None,
+            nueva_cota = cartera.altura_instrumental - vista_menos
+
+            if (nueva_cota<=0): 
+                return JsonResponse({
+                    "success": False,
+                    "message": "Error: Vista (-) no válida. La cota calculada debe ser superior a 0."
+                }, status=400)
+            
+            punto_delta = Puntos.objects.create(
+                tipo_punto_id=2,
+                punto=data.get("punto"),
+                altura_instrumental = cartera.altura_instrumental,
+                vista_menos=vista_menos,
+                cota = nueva_cota,
+                cartera_nivelacion_id=cartera.id
             )
 
-            cartera.cota = cartera.altura_instrumental - punto_delta.vista_menos
+
+            cartera.cota = nueva_cota
             cartera.save()
-            punto = Punto.objects.create(
-                tipo_punto_id=2,
-                punto = data.get("punto"),
-                registro_id = punto_delta.id,
-                cartera_nivelacion_id = cartera.id
-            )
+        
 
             return JsonResponse({
                 "success": True,
                 "message": "Punto Delta guardado correctamente",
-                "punto": punto.punto,
+                "punto": punto_delta.punto,
                 "alturaInstrumental": cartera.altura_instrumental,
                 "vistaMenos": punto_delta.vista_menos,
                 "cota": cartera.cota
             }, status=201)
             
+        except CarteraNivelacion.DoesNotExist:
+            return JsonResponse({
+                "success": False,
+                "message": "Error: No se encontró la cartera nivelación con el ID proporcionado."
+            }, status=404)
+        
         except Exception as e:
             print("Error:", e)  # Imprimir el error en la terminal
             print("Traceback:", traceback.format_exc())  # Ver detalles del error
@@ -249,34 +328,75 @@ def guardar_punto_cambio(request, cartera_id):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
+            try:
+                vista_mas = Decimal(data.get("vista_mas") or 0)
+            except InvalidOperation:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Error: Vista (+) no tiene un formato válido."
+                }, status=400)
+
+            if (vista_mas<=0):
+                return JsonResponse({
+                    "success": False,
+                    "message": "Error: Vista(+) no puede ser negativa."
+                }, status=400)
+            try:
+                vista_menos = Decimal(data.get("vista_menos") or 0)
+            except InvalidOperation:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Error: Vista (-) no tiene un formato válido."
+                }, status=400)
+
+            if (vista_menos<=0):
+                return JsonResponse({
+                    "success": False,
+                    "message": "Error: Vista(-) no puede ser negativa."
+                }, status=400)
+            
 
             cartera = CarteraNivelacion.objects.get(id=cartera_id)
-            punto_cambio = PuntoCambio.objects.create(
-                vista_mas=Decimal(data.get("vista_mas")) if data.get("vista_mas") else None,
-                vista_menos=Decimal(data.get("vista_menos")) if data.get("vista_menos") else None,
-            )
 
-            cartera.cota = cartera.altura_instrumental - punto_cambio.vista_menos
-            cartera.altura_instrumental = cartera.cota + punto_cambio.vista_mas
-            cartera.save()
+            nueva_cota = cartera.altura_instrumental - vista_menos
+            if (nueva_cota<=0):
+                return JsonResponse({
+                    "success": False,
+                    "message": "Error: Vista (-) no válida. La cota calculada debe ser mayor a 0."
+                }, status=400)
+            
+            nueva_altura_instrumental = nueva_cota + vista_mas
 
-            punto = Punto.objects.create(
+            punto_cambio = Puntos.objects.create(
                 tipo_punto_id=3,
-                punto = data.get("punto"),
-                registro_id = punto_cambio.id,
-                cartera_nivelacion_id = cartera.id
+                punto=data.get("punto"),
+                altura_instrumental = nueva_altura_instrumental,
+                vista_mas=vista_mas,
+                vista_menos=vista_menos,
+                cota = nueva_cota,
+                cartera_nivelacion_id=cartera.id
             )
+
+            cartera.cota = nueva_cota
+            cartera.altura_instrumental = nueva_altura_instrumental
+            cartera.save()
 
             return JsonResponse({
                 "success": True,
                 "message": "Punto Cambio guardado correctamente",
-                "punto": punto.punto,
+                "punto": punto_cambio.punto,
                 "alturaInstrumental": cartera.altura_instrumental,
                 "vistaMas": punto_cambio.vista_mas,
                 "vistaMenos": punto_cambio.vista_menos,
                 "cota": cartera.cota
             }, status=201)
             
+        except CarteraNivelacion.DoesNotExist:
+            return JsonResponse({
+                "success": False,
+                "message": "Error: No se encontró la cartera nivelación con el ID proporcionado."
+            }, status=404)
+        
         except Exception as e:
             print("Error:", e)  # Imprimir el error en la terminal
             print("Traceback:", traceback.format_exc())  # Ver detalles del error
@@ -289,9 +409,10 @@ def guardar_punto_cambio(request, cartera_id):
 #READ CARTERA:
 #@login_required
 def ver_cartera(request, pk):
-    cartera = CarteraNivelacion.objects.filter(basica_id=pk)
+    cartera = CarteraNivelacion.objects.get(basica_id=pk)
+
     basica = InformacionBasica.objects.get(pk=pk)
-    return render(request, 'ver_cartera.html', {'carteras': cartera, 'basica': basica})
+    return render(request, 'ver_cartera.html', {'cartera': cartera, 'basica': basica})
 
 #UPDATE CARTERA:
 #@login_required
