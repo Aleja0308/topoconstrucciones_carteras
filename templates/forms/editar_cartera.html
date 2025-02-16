@@ -7,6 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Editar Cartera</title>
   <link rel="stylesheet" href="{% static '/src/css/output.css' %}">
+  <script src="{% static 'src/js/editar_cartera.js' %}" defer></script>
+
 </head>
 
 <body class="bg-gray-100">
@@ -18,26 +20,41 @@
   </h1>
 
   <!-- Botón para regresar -->
-  <button type="button" class="mx-16 text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-8" onclick="window.location='{% url 'ver_inicio' %}';">
+  <button type="button"
+    class="mx-16 text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-8"
+    onclick="window.location='{% url 'ver_inicio' %}';">
     Volver
   </button>
 
   <!-- Formulario de edición -->
   <div class="mx-16 relative overflow-x-auto shadow-md sm:rounded-lg bg-opacity-90 bg-white dark:bg-gray-800 p-6">
     <h2 class="text-xl font-semibold mb-4">Formulario de Edición</h2>
-    <form action="{% url 'editar_cartera' cartera.pk %}" method="post">
+    <form action="" method="post">
       {% csrf_token %}
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {{ form.as_p }}
+        {% for field in form %}
+        <div>
+          <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
+            {{ field.label }}
+          </label>
+          {{ field }}
+          {% if field.errors %}
+          <p class="text-red-500 text-sm">{{ field.errors.0 }}</p>
+          {% endif %}
+        </div>
+        {% endfor %}
       </div>
       <div class="flex justify-end mt-6 space-x-4">
-        <button type="submit" class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition">
+        <button type="submit" class="boton-editar-punto bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition">
           Guardar cambios
         </button>
-        <button type="button" class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition" onclick="window.location='{% url 'ver_cartera' pk=cartera.pk %}';">
+        <button type="button" class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition"
+          onclick="window.location='{% url 'ver_cartera' pk=punto.cartera_nivelacion.pk %}';">
           Cancelar
         </button>
       </div>
+      <span class="editar-punto-resultado text-red-500 font-bold"></span>
+      <input type="hidden" value="{{ punto.cartera_nivelacion.pk }}" id="id_cartera_nivelacion">
     </form>
   </div>
 
@@ -45,7 +62,7 @@
   <div class="mx-16 relative overflow-x-auto shadow-md sm:rounded-lg bg-opacity-90 bg-white dark:bg-gray-800 mt-10">
     <h2 class="text-xl font-semibold mb-4">Detalles del Punto Seleccionado</h2>
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-      <thead class="text-xs text-white uppercase bg-amber-500 dark:bg-amber-700">
+      <thead class="text-xs text-black uppercase bg-amber-500 dark:bg-amber-700">
         <tr>
           <th scope="col" class="px-6 py-3">Tipo Punto</th>
           <th scope="col" class="px-6 py-3">Punto</th>
@@ -57,12 +74,12 @@
       </thead>
       <tbody>
         <tr class="bg-white border-b hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-          <td class="px-6 py-4"> cartera.tipo_punto </td>
-          <td class="px-6 py-4"> cartera.punto </td>
-          <td class="px-6 py-4"> cartera.altura_instrumental </td>
-          <td class="px-6 py-4"> cartera.vista_mas </td>
-          <td class="px-6 py-4"> cartera.vista_menos </td>
-          <td class="px-6 py-4"> cartera.cota </td>
+          <td class="px-6 py-4"> {{punto.tipo_punto.nombre}} </td>
+          <td class="px-6 py-4"> {{punto.punto}} </td>
+          <td class="px-6 py-4"> {{punto.altura_instrumental}} </td>
+          <td class="px-6 py-4"> {{punto.vista_mas}} </td>
+          <td class="px-6 py-4"> {{punto.vista_menos}} </td>
+          <td class="px-6 py-4"> {{punto.cota}} </td>
         </tr>
       </tbody>
     </table>

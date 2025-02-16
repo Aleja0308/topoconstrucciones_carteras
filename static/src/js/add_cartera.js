@@ -93,7 +93,6 @@ const guardarPuntoBM = function () {
             }
         })
         .catch(error => {
-            alert(data.message);
             console.error("Error:", error);
             guardarPuntoResultadoSpan.textContent = data.message;
             timeoutGuardarPuntoResultado = setTimeout(() => {

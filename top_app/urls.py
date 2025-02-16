@@ -16,7 +16,8 @@ urlpatterns = [
     path('guardar-punto-delta/<int:cartera_id>/', views.guardar_punto_delta, name='guardar_punto_delta'),
     path('guardar-punto-cambio/<int:cartera_id>/', views.guardar_punto_cambio, name='guardar_punto_cambio'),
     path('ver_cartera/<int:pk>/', views.ver_cartera, name='ver_cartera'),
-    path('editar_cartera/<int:pk>/', views.editar_cartera, name='editar_cartera'),
+    path('editar_cartera_template/<int:pk>/', views.editar_cartera_template, name='editar_cartera_template'),
+    path('editar_punto/<int:punto_id>/', views.editar_punto, name='editar_punto'),
     path('eliminar_cartera/<int:pk>/', views.eliminar_cartera, name='eliminar_cartera'),
     path('logout_session/', views.logout_session, name="logout_session"),
 ]

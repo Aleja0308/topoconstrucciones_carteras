@@ -32,14 +32,49 @@ class InformacionBasicaForm(forms.ModelForm):
 class PuntosForm(forms.ModelForm):
     class Meta:
         model = Puntos
-        fields = ['tipo_punto', 'punto', 'altura_instrumental', 'vista_mas', 'vista_menos']
+        fields = ['tipo_punto', 'punto', 'altura_instrumental', 'vista_mas', 'vista_menos', 'cota']
         widgets = {
-            'tipo_punto': forms.Select(attrs={'class': 'w-full p-2 rounded-md border'}),
             'punto': forms.TextInput(attrs={'class': 'w-full p-2 rounded-md border'}),
             'altura_instrumental': forms.NumberInput(attrs={'class': 'w-full p-2 rounded-md border', 'step': 'any'}),
             'vista_mas': forms.NumberInput(attrs={'class': 'w-full p-2 rounded-md border', 'step': 'any'}),
             'vista_menos': forms.NumberInput(attrs={'class': 'w-full p-2 rounded-md border', 'step': 'any'}),
+            'cota': forms.NumberInput(attrs={'class': 'w-full p-2 rounded-md border', 'step': 'any'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        super(PuntosForm, self).__init__(*args, **kwargs)
+
+        if instance and instance.tipo_punto:
+            tipo_punto_id = instance.tipo_punto.id
+
+            if tipo_punto_id == 1:
+                # Asignar el valor fijo y ocultar el campo en el formulario
+                self.fields['tipo_punto'].queryset = TipoPunto.objects.filter(id__in=[1])
+                self.fields['tipo_punto'].empty_label = None  # Elimina la opción vacía
+                self.fields['tipo_punto'].widget.attrs['readonly'] = True
+                self.fields['tipo_punto'].widget.attrs['class'] = 'w-full p-2 rounded-md border cursor-not-allowed opacity-50'  # Agrega estilos 
+            else:
+                # Mostrar solo las opciones permitidas (2 y 3) y evitar el null
+                self.fields['tipo_punto'].queryset = TipoPunto.objects.filter(id__in=[2, 3])
+                self.fields['tipo_punto'].empty_label = None  # Elimina la opción vacía
+                self.fields['tipo_punto'].widget.attrs['class'] = 'w-full p-2 rounded-md border'  # Agrega estilos 
+
+
+            # Configurar los campos de solo lectura según el tipo_punto_id
+            self.set_readonly_fields(tipo_punto_id)
+
+    def set_readonly_fields(self, tipo_punto_id):
+        """ Configura los campos de solo lectura según el tipo_punto_id """
+        readonly_fields = {
+            1: ['altura_instrumental', 'vista_menos'],
+            2: ['altura_instrumental', 'vista_mas', 'cota'],
+            3: ['altura_instrumental', 'cota']
+        }
+
+        for field in readonly_fields.get(tipo_punto_id, []):
+            self.fields[field].widget.attrs['readonly'] = True
+            self.fields[field].widget.attrs['class'] += ' opacity-50 cursor-not-allowed'  # Agrega estilos visuales
 
 class CarteraNivelacionForm(forms.ModelForm):
     tipo_punto = forms.ModelChoiceField(

@@ -8,6 +8,8 @@ from .models import InformacionBasica, CarteraNivelacion, Puntos
 from .models import CarteraNivelacion
 from .forms import InformacionBasicaForm
 from .forms import CarteraNivelacionForm
+from .forms import PuntosForm
+from django.db import transaction
 import json
 import traceback
 
@@ -416,22 +418,230 @@ def ver_cartera(request, pk):
 
 #UPDATE CARTERA:
 #@login_required
-def editar_cartera(request, pk):
+def editar_cartera_template(request, pk):
     # Asegúrate de obtener el objeto correctamente
-    cartera = get_object_or_404(CarteraNivelacion, pk=pk)
+    punto = get_object_or_404(Puntos, pk=pk)
+    form = PuntosForm(instance=punto)
+    return render(request, 'forms/editar_cartera.html', {'form':form, 'punto': punto})
 
+def editar_punto(request, punto_id):
     if request.method == "POST":
-        form = CarteraNivelacionForm(request.POST, instance=cartera)
-        if form.is_valid():
-            cartera = form.save(commit=False)
-            cartera.calcular_cota()
-            cartera.save()
-            # Asegúrate de redirigir con el pk correcto
-            return redirect('ver_cartera', pk=cartera.pk)
-    else:
-        form = CarteraNivelacionForm(instance=cartera)
+        try:
+            data = json.loads(request.body)
+            print(data)
+            print("ID de punto recibido:", punto_id)
+            tipo_punto_id = data.get("tipo_punto") or 0
+            # Obtener el punto y cartera
+            punto = Puntos.objects.get(id=punto_id)
+            cartera = punto.cartera_nivelacion
+            nombre_punto = data.get("punto") or None
+            if (nombre_punto == None):
+                return JsonResponse({
+                        "success": False,
+                        "message": "Error: Debes asignar un nombre al punto."
+                    }, status=400)
+            print("Tipo punto id")
+            print(tipo_punto_id)
+            if (tipo_punto_id == "1"):
+                print("Hola desde punto BM")
+                # Intentar convertir vista_mas y cota_inicial a Decimal
+                try:
+                    vista_mas = Decimal(data.get("vista_mas") or 0)
+                except InvalidOperation:
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Error: Vista (+) no tiene un formato válido."
+                    }, status=400)
+                try:
+                    cota_inicial = Decimal(data.get("cota") or 0)
+                except InvalidOperation:
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Error: Cota no tiene un formato válido."
+                    }, status=400)
+                
+                if (vista_mas<=0):
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Error: Vista(+) debe ser positiva."
+                    }, status=400)
+                
+                if (cota_inicial<=0):
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Error: Cota debe ser positiva."
+                    }, status=400)
+                
 
-    return render(request, 'forms/editar_cartera.html', {'form': form, 'cartera': cartera})
+                punto.punto=nombre_punto
+                punto.vista_mas=vista_mas
+                punto.cota=cota_inicial
+                punto.altura_instrumental = vista_mas + cota_inicial
+
+            elif (tipo_punto_id == "2"):
+                print("Hola desde punto Delta")
+                try:
+                    vista_menos = Decimal(data.get("vista_menos") or 0)
+                except InvalidOperation:
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Error: Vista (-) no tiene un formato válido."
+                    }, status=400)
+
+                if (vista_menos<=0):
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Error: Vista(-) debe ser positiva."
+                    }, status=400)   
+                
+                nueva_cota = punto.altura_instrumental - vista_menos
+
+                if (nueva_cota<=0): 
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Error: Vista (-) no válida. La cota calculada debe ser superior a 0."
+                    }, status=400)   
+                
+                punto.punto=nombre_punto
+                punto.vista_menos= vista_menos
+                punto.cota = nueva_cota
+
+            elif (tipo_punto_id == "3"):
+                print("Hola desde punto Cambio")
+
+                try:
+                    vista_mas = Decimal(data.get("vista_mas") or 0)
+                except InvalidOperation:
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Error: Vista (+) no tiene un formato válido."
+                    }, status=400)
+
+                if (vista_mas<=0):
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Error: Vista(+) no puede ser negativa."
+                    }, status=400)
+                try:
+                    vista_menos = Decimal(data.get("vista_menos") or 0)
+                except InvalidOperation:
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Error: Vista (-) no tiene un formato válido."
+                    }, status=400)
+
+                if (vista_menos<=0):
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Error: Vista(-) no puede ser negativa."
+                    }, status=400)
+                
+                nueva_cota = cartera.altura_instrumental - vista_menos
+
+                if (nueva_cota<=0):
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Error: Vista (-) no válida. La cota calculada debe ser mayor a 0."
+                    }, status=400)
+                
+                nueva_altura_instrumental = nueva_cota + vista_mas
+
+                punto.punto=nombre_punto
+                punto.altura_instrumental = nueva_altura_instrumental
+                punto.vista_mas=vista_mas
+                punto.vista_menos=vista_menos
+                punto.cota = nueva_cota
+
+
+            print(punto.cota)
+            print(punto.vista_mas)
+            print(punto.altura_instrumental)
+
+            cartera.cota = punto.cota
+            cartera.altura_instrumental = punto.altura_instrumental
+
+
+
+            puntos_posteriores = Puntos.objects.filter(
+            cartera_nivelacion=punto.cartera_nivelacion,  
+            id__gt=punto.id  # Obtener solo los puntos con ID mayor (posteriores)
+            ).order_by("id")  # Ordenar por ID en orden ascendente
+
+            # Lógica para actualizar puntos posteriores
+            try:
+                with transaction.atomic():  # 🔹 Bloque de transacción, si algo falla se revierte todo
+                    for punto_posterior in puntos_posteriores:
+                        if(punto_posterior.tipo_punto_id == 2):
+                            punto_posterior_nueva_cota = cartera.altura_instrumental - punto_posterior.vista_menos
+
+                            if (punto_posterior_nueva_cota<=0):
+                                raise ValueError("Error: La actualización del punto dañaría el cálculo de los puntos creados posteriormente.")
+
+                            punto_posterior.altura_instrumental = cartera.altura_instrumental
+                            punto_posterior.cota = punto_posterior_nueva_cota
+                            print("Punto posterior con ID: ")
+                            print(punto_posterior.id)
+                            print(punto_posterior.altura_instrumental)
+                            print(punto_posterior.cota)
+                            
+                            cartera.cota = punto_posterior.cota
+
+                        elif(punto_posterior.tipo_punto_id == 3):
+                            punto_posterior_nueva_cota = cartera.altura_instrumental - punto_posterior.vista_menos
+                            if (punto_posterior_nueva_cota<=0):
+                                raise ValueError("Error: La actualización del punto dañaría el cálculo de los puntos creados posteriormente.")
+                            punto_posterior_nueva_altura_instrumental = punto_posterior_nueva_cota + punto_posterior.vista_mas
+
+                            punto_posterior.altura_instrumental = punto_posterior_nueva_altura_instrumental
+                            punto_posterior.cota = punto_posterior_nueva_cota
+
+                            cartera.altura_instrumental = punto_posterior.altura_instrumental
+                            cartera.cota = punto_posterior.cota
+
+                        punto_posterior.save()
+                        print("punto_posterior guardado correctamente.")
+                print("Transacción completada correctamente")
+            except ValueError as e:
+                return JsonResponse({"success": False, "message": str(e)}, status=400)
+
+            except Exception as e:
+                return JsonResponse({"success": False, "message": "Ocurrió un error inesperado."}, status=500)
+                    
+
+            print("Intentando guardar punto con valores:")
+            print("Punto ID:", punto.id)
+            print("Vista Mas:", punto.vista_mas)
+            print("Vista Menos:", punto.vista_menos)
+            print("Cota:", punto.cota)
+            print("Altura Instrumental:", punto.altura_instrumental)
+            print("Guardando punto antes de commit... xd")
+            punto.save()
+            print("Punto guardado correctamente en transaction")
+            print("Guardando cartera antes de commit...")
+            cartera.save()
+            print("cartera guardado correctamente.")
+
+            return JsonResponse({
+                "success": True,
+                "message": "Punto actualizado correctamente",
+            }, status=201)
+
+        except InformacionBasica.DoesNotExist:
+            return JsonResponse({
+                "success": False,
+                "message": "Error: No se encontró el punto con el ID proporcionado."
+            }, status=404)
+
+        except Exception as e:
+            print("Error:", e)  # Imprimir el error en la terminal
+            print("Traceback:", traceback.format_exc())  # Ver detalles del error
+            return JsonResponse({
+                "success": False,
+                "message": f"Error inesperado: {str(e)}",
+                "traceback": traceback.format_exc()
+            }, status=500)
+
+    return JsonResponse({"success": False, "message": "Método no permitido"}, status=405)
 
 #DELETE CARTERA:
 #@login_required
