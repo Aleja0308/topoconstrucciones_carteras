@@ -209,11 +209,14 @@ const renderNuevaFilaPunto = function () {
 const habilitarCamposRegistrandoDelta = function () {
     registrandoInputVistaMas.readOnly = true;
     registrandoInputVistaMenos.readOnly = false;
+    registrandoInputVistaMas.classList.add('cursor-not-allowed', 'opacity-50');
+
 }
 
 const habilitarCamposRegistrandoCambio = function () {
     registrandoInputVistaMas.readOnly = false;
     registrandoInputVistaMenos.readOnly = false;
+    registrandoInputVistaMas.classList.remove('cursor-not-allowed', 'opacity-50');
 }
 
 const inhabilitarInputsPuntoRegistrado = function () {
@@ -261,6 +264,7 @@ document.addEventListener('DOMContentLoaded', function () {
     carteraId = urlPath.split('/')[2]; // Divide la URL por '/' y obtiene el tercer elemento (el ID de la cartera)
 
     seleccionarTodosLosInputsFila(filaAñadirPuntoInicial);
+    registrandoInputTipoPunto.onchange = (event) => registrandoInputTipoPuntoHandleChange(event);
 
     botonGuardarPunto.onclick = (event) => botonGuardarPuntoHandleClick(event);
 });

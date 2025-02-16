@@ -90,73 +90,12 @@ def add_cartera(request, pk):
     # Obtener el objeto de la cartera básica (InformacionBasica) relacionado
     basica = get_object_or_404(InformacionBasica, pk=pk)
 
-    if request.method == 'POST':
-        # Crear el formulario y pasarlo con los datos POST
-        form = CarteraNivelacionForm(request.POST)
+    cartera, created = CarteraNivelacion.objects.get_or_create(
+        id=basica.id,
+        defaults={"basica_id": basica.id}
+    )
 
-        if form.is_valid():
-            # Obtener los datos del formulario
-            tipo_punto = form.cleaned_data.get('tipo_punto')
-            altura_instrumental = form.cleaned_data.get('altura_instrumental')
-            vista_mas = form.cleaned_data.get('vista_mas')
-            vista_menos = form.cleaned_data.get('vista_menos')
-            cota = form.cleaned_data.get('cota')
-
-            # Asignar 0.00 si los valores son vacíos
-            altura_instrumental = altura_instrumental if altura_instrumental else Decimal('0.00')
-            vista_mas = vista_mas if vista_mas else Decimal('0.00')
-            vista_menos = vista_menos if vista_menos else Decimal('0.00')
-            cota = cota if cota else Decimal('0.00')
-
-            # Guardar el primer punto BM
-            if tipo_punto == "BM":
-                CarteraNivelacion.objects.create(
-                    basica=basica,
-                    tipo_punto=tipo_punto,
-                    altura_instrumental=altura_instrumental,
-                    vista_mas=vista_mas,
-                    vista_menos=vista_menos,
-                    cota=cota
-                )
-
-            # Guardar el tipo de punto Delta
-            elif tipo_punto == "Delta":
-                if cota is None or vista_menos is None:
-                    form.add_error('cota', 'Para el tipo de punto Delta, la cota inicial y vista (-) son obligatorios.')
-                else:
-                    cota = altura_instrumental - vista_menos
-                    CarteraNivelacion.objects.create(
-                        basica=basica,
-                        tipo_punto=tipo_punto,
-                        altura_instrumental=altura_instrumental,
-                        vista_mas=vista_mas,
-                        vista_menos=vista_menos,
-                        cota=cota
-                    )
-
-            # Guardar el tipo de punto Cambio
-            elif tipo_punto == "Cambio":
-                if vista_mas is None or vista_menos is None:
-                    form.add_error('vista_mas', 'Para el tipo de punto Cambio, ambas vistas (+) y (-) son obligatorias.')
-                else:
-                    cota = altura_instrumental - vista_menos
-                    altura_instrumental = cota + vista_mas
-                    CarteraNivelacion.objects.create(
-                        basica=basica,
-                        tipo_punto=tipo_punto,
-                        altura_instrumental=altura_instrumental,
-                        vista_mas=vista_mas,
-                        vista_menos=vista_menos,
-                        cota=cota
-                    )
-
-            # Si el formulario es válido, redirigir a otra página o mostrar éxito
-            return render(request, 'ver_basica.html', {'basica': basica})
-
-    else:
-        form = CarteraNivelacionForm()
-
-    return render(request, 'forms/add_cartera.html', {'form': form, 'basica': basica})
+    return render(request, 'forms/add_cartera.html', {'cartera': cartera})
 
 #GUARDAR PUNTO BM
 
@@ -434,14 +373,24 @@ def editar_punto(request, punto_id):
             # Obtener el punto y cartera
             punto = Puntos.objects.get(id=punto_id)
             cartera = punto.cartera_nivelacion
+
+            if (tipo_punto_id != "1"):
+                punto_anterior = Puntos.objects.filter(
+                    cartera_nivelacion=punto.cartera_nivelacion,  
+                    id__lt=punto.id  # Filtrar solo los puntos con ID menor (anteriores)
+                ).order_by("-id").first()  # Ordenar en orden descendente y tomar el primero
+
+                cartera.altura_instrumental = punto_anterior.altura_instrumental
+                cartera.cota = punto_anterior.cota
+
             nombre_punto = data.get("punto") or None
             if (nombre_punto == None):
                 return JsonResponse({
                         "success": False,
                         "message": "Error: Debes asignar un nombre al punto."
                     }, status=400)
-            print("Tipo punto id")
-            print(tipo_punto_id)
+            
+
             if (tipo_punto_id == "1"):
                 print("Hola desde punto BM")
                 # Intentar convertir vista_mas y cota_inicial a Decimal
@@ -494,7 +443,7 @@ def editar_punto(request, punto_id):
                         "message": "Error: Vista(-) debe ser positiva."
                     }, status=400)   
                 
-                nueva_cota = punto.altura_instrumental - vista_menos
+                nueva_cota = cartera.altura_instrumental - vista_menos
 
                 if (nueva_cota<=0): 
                     return JsonResponse({
@@ -502,8 +451,12 @@ def editar_punto(request, punto_id):
                         "message": "Error: Vista (-) no válida. La cota calculada debe ser superior a 0."
                     }, status=400)   
                 
+                
+                punto.tipo_punto_id = tipo_punto_id
                 punto.punto=nombre_punto
+                punto.altura_instrumental = cartera.altura_instrumental
                 punto.vista_menos= vista_menos
+                punto.vista_mas = None
                 punto.cota = nueva_cota
 
             elif (tipo_punto_id == "3"):
@@ -546,21 +499,15 @@ def editar_punto(request, punto_id):
                 
                 nueva_altura_instrumental = nueva_cota + vista_mas
 
+                punto.tipo_punto_id = tipo_punto_id
                 punto.punto=nombre_punto
                 punto.altura_instrumental = nueva_altura_instrumental
                 punto.vista_mas=vista_mas
                 punto.vista_menos=vista_menos
                 punto.cota = nueva_cota
 
-
-            print(punto.cota)
-            print(punto.vista_mas)
-            print(punto.altura_instrumental)
-
             cartera.cota = punto.cota
             cartera.altura_instrumental = punto.altura_instrumental
-
-
 
             puntos_posteriores = Puntos.objects.filter(
             cartera_nivelacion=punto.cartera_nivelacion,  
@@ -599,27 +546,16 @@ def editar_punto(request, punto_id):
                             cartera.cota = punto_posterior.cota
 
                         punto_posterior.save()
-                        print("punto_posterior guardado correctamente.")
-                print("Transacción completada correctamente")
+
             except ValueError as e:
                 return JsonResponse({"success": False, "message": str(e)}, status=400)
 
             except Exception as e:
                 return JsonResponse({"success": False, "message": "Ocurrió un error inesperado."}, status=500)
-                    
-
-            print("Intentando guardar punto con valores:")
-            print("Punto ID:", punto.id)
-            print("Vista Mas:", punto.vista_mas)
-            print("Vista Menos:", punto.vista_menos)
-            print("Cota:", punto.cota)
-            print("Altura Instrumental:", punto.altura_instrumental)
-            print("Guardando punto antes de commit... xd")
+                
             punto.save()
-            print("Punto guardado correctamente en transaction")
-            print("Guardando cartera antes de commit...")
+
             cartera.save()
-            print("cartera guardado correctamente.")
 
             return JsonResponse({
                 "success": True,
@@ -645,10 +581,64 @@ def editar_punto(request, punto_id):
 
 #DELETE CARTERA:
 #@login_required
-def eliminar_cartera(request, pk):
+def eliminar_punto(request, pk):
     if request.method == 'POST':  # Verifica que sea una solicitud POST
-        cartera = get_object_or_404(CarteraNivelacion, pk=pk)  # Obtén el objeto o devuelve 404
-        cartera.delete()  # Elimina el objeto
+
+        punto = get_object_or_404(Puntos, pk=pk)  # Obtén el objeto o devuelve 404
+        cartera = punto.cartera_nivelacion
+
+        # Obtener el punto inmediatamente anterior (menor ID más cercano)
+        punto_anterior = Puntos.objects.filter(
+            cartera_nivelacion=punto.cartera_nivelacion,  
+            id__lt=punto.id  # Filtrar solo los puntos con ID menor (anteriores)
+        ).order_by("-id").first()  # Ordenar en orden descendente y tomar el primero
+
+        puntos_posteriores = Puntos.objects.filter(
+            cartera_nivelacion=punto.cartera_nivelacion,  
+            id__gt=punto.id  # Obtener solo los puntos con ID mayor (posteriores)
+            ).order_by("id")  # Ordenar por ID en orden ascendente
+
+            # Lógica para actualizar puntos posteriores
+
+        cartera.altura_instrumental = punto_anterior.altura_instrumental
+        cartera.cota = punto_anterior.cota
+        try:
+            with transaction.atomic():  # 🔹 Bloque de transacción, si algo falla se revierte todo
+                for punto_posterior in puntos_posteriores:
+                    if(punto_posterior.tipo_punto_id == 2):
+                        punto_posterior_nueva_cota = cartera.altura_instrumental - punto_posterior.vista_menos
+
+                        if (punto_posterior_nueva_cota<=0):
+                            raise ValueError("Error: La eliminación del punto dañaría el cálculo de los puntos creados posteriormente.")
+                        punto_posterior.altura_instrumental = cartera.altura_instrumental
+                        punto_posterior.cota = punto_posterior_nueva_cota
+                        print("Punto posterior con ID: ")
+                        print(punto_posterior.id)
+                        print(punto_posterior.altura_instrumental)
+                        print(punto_posterior.cota)
+                            
+                        cartera.cota = punto_posterior.cota
+
+                    elif(punto_posterior.tipo_punto_id == 3):
+                        punto_posterior_nueva_cota = cartera.altura_instrumental - punto_posterior.vista_menos
+                        if (punto_posterior_nueva_cota<=0):
+                            raise ValueError("Error: La eliminación del punto dañaría el cálculo de los puntos creados posteriormente.")
+                        punto_posterior_nueva_altura_instrumental = punto_posterior_nueva_cota + punto_posterior.vista_mas
+                        punto_posterior.altura_instrumental = punto_posterior_nueva_altura_instrumental
+                        punto_posterior.cota = punto_posterior_nueva_cota
+                        cartera.altura_instrumental = punto_posterior.altura_instrumental
+                        cartera.cota = punto_posterior.cota
+
+                    punto_posterior.save()
+
+        except ValueError as e:
+            return JsonResponse({"success": False, "message": str(e)}, status=400)
+
+        except Exception as e:
+            return JsonResponse({"success": False, "message": "Ocurrió un error inesperado."}, status=500)
+
+        punto.delete()  # Elimina el objeto
+        cartera.save()
         return JsonResponse({'success': True})  # Devuelve una respuesta JSON de éxito
     return JsonResponse({'error': 'Método no permitido'}, status=405)  # Si no es POST, responde con error
 

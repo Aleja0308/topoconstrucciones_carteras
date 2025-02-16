@@ -38,6 +38,30 @@
             </tr>
           </thead>
           <tbody class="cuerpo-tabla-puntos-cartera">
+            {% for punto in cartera.puntos_set.all %}
+            <tr class="dynamic-form">
+              <td class="px-6 py-4">
+                <select name="tipo_punto" class="tipo-punto px-2 py-1 border rounded cursor-not-allowed opacity-50" readonly>
+                  <option value="{{ punto.tipo_punto.id }}">{{ punto.tipo_punto.nombre }}</option>
+                </select>
+              </td>
+              <td class="px-6 py-4">
+                <input type="text" name="punto" class="punto px-2 py-1 border rounded cursor-not-allowed opacity-50" value="{{ punto.punto }}" readonly>
+              </td>
+              <td class="px-6 py-4">
+                <input type="text" name="altura_instrumental" class="altura-instrumental px-2 py-1 border rounded cursor-not-allowed opacity-50" value="{{ punto.altura_instrumental }}" readonly>
+              </td>
+              <td class="px-6 py-4">
+                <input type="text" name="vista_mas" class="vista-mas px-2 py-1 border rounded cursor-not-allowed opacity-50" value="{{ punto.vista_mas }}" readonly>
+              </td>
+              <td class="px-6 py-4">
+                <input type="text" name="vista_menos" class="vista-menos px-2 py-1 border rounded cursor-not-allowed opacity-50" value="{{ punto.vista_menos }}" readonly>
+              </td>
+              <td class="px-6 py-4">
+                <input type="text" name="cota" class="cota px-2 py-1 border rounded cursor-not-allowed opacity-50" value="{{ punto.cota }}" readonly>
+              </td>
+            </tr>
+            {% empty %}
             <tr class="dynamic-form fila-añadir-punto-inicial">
               <td class="px-6 py-4">
                 <select name="tipo_punto" class="tipo-punto px-2 py-1 border rounded">
@@ -48,18 +72,44 @@
                 <input type="text" name="punto" class="punto px-2 py-1 border rounded" value="BM001" readonly>
               </td>
               <td class="px-6 py-4">
-                <input type="number" name="altura_instrumental" class="altura-instrumental px-2 py-1 border rounded" readonly>
+                <input type="number" name="altura_instrumental" class="altura-instrumental px-2 py-1 border rounded cursor-not-allowed opacity-50" readonly>
               </td>
               <td class="px-6 py-4">
                 <input type="number" name="vista_mas" class="vista-mas px-2 py-1 border rounded">
               </td>
               <td class="px-6 py-4">
-                <input type="number" name="vista_menos" class="vista-menos px-2 py-1 border rounded" readonly>
+                <input type="number" name="vista_menos" class="vista-menos px-2 py-1 border rounded cursor-not-allowed opacity-50" readonly>
               </td>
               <td class="px-6 py-4">
                 <input type="number" name="cota" class="cota px-2 py-1 border rounded">
               </td>
             </tr>
+            {% endfor %}
+            {% if cartera.puntos_set.all %}
+            <tr class="dynamic-form fila-añadir-punto-inicial">
+              <td class="px-6 py-4">
+                <select name="tipo_punto" class="tipo-punto px-2 py-1 border rounded">
+                  <option value="2" selected>Delta</option>
+                  <option value="3">Cambio</option>
+                </select>
+              </td>
+              <td class="px-6 py-4">
+                <input type="text" name="punto" class="punto px-2 py-1 border rounded" value="BM001" readonly>
+              </td>
+              <td class="px-6 py-4">
+                <input type="number" name="altura_instrumental" class="altura-instrumental px-2 py-1 border rounded cursor-not-allowed opacity-50" readonly>
+              </td>
+              <td class="px-6 py-4">
+                <input type="number" name="vista_mas" class="vista-mas px-2 py-1 border rounded cursor-not-allowed opacity-50" readonly>
+              </td>
+              <td class="px-6 py-4">
+                <input type="number" name="vista_menos" class="vista-menos px-2 py-1 border rounded">
+              </td>
+              <td class="px-6 py-4">
+                <input type="number" name="cota" class="cota px-2 py-1 border rounded cursor-not-allowed opacity-50" readonly>
+              </td>
+            </tr>
+            {% endif %}
           </tbody>
         </table>
         <div class="m-5 flex justify-between">

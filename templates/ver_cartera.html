@@ -6,34 +6,51 @@
     <h2 class="text-lg font-semibold text-gray-800">Confirmar Eliminación</h2>
     <p class="text-sm text-gray-600 mt-2">¿Estás seguro de que deseas eliminar este registro?</p>
     <div class="flex justify-end mt-4">
-      <button class="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 mr-2" onclick="closeModal()">Cancelar</button>
-      <button class="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600" id="confirmDeleteButton">Eliminar</button>
+      <button class="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 mr-2"
+        onclick="closeModal()">Cancelar</button>
+      <button class="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600"
+        id="confirmDeleteButton">Eliminar</button>
     </div>
   </div>
 </div>
 
 <!-- Toast -->
-<div id="toast-success" class="fixed bottom-4 right-4 flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800 hidden" role="alert">
-  <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+<div id="toast-success"
+  class="fixed bottom-4 right-4 z-[9999] flex items-center w-full max-w-xs p-4 mb-4 text-black-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800 hidden"
+  role="alert">
+  <div
+    class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+      <path
+        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
     </svg>
   </div>
-  <div class="ms-3 text-sm font-normal">¡El registro ha sido eliminado!</div>
-  <button class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg p-1.5 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" onclick="closeToast()">
+  <div class="delete-result-message ms-3 text-sm font-normal">¡El registro ha sido eliminado!</div>
+  <button
+    class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg p-1.5 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+    onclick="closeToast()">
     <span class="sr-only">Cerrar</span>
     <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
     </svg>
   </button>
 </div>
 
 <!-- Contenido -->
 <h1 class="text-3xl font-black mb-6 text-center mt-5">
-  <span class="from-yellow-400 to-orange-600 text-transparent bg-clip-text bg-gradient-to-l">Ver Cartera de Nivelación</span>
+  <span class="from-yellow-400 to-orange-600 text-transparent bg-clip-text bg-gradient-to-l">Ver Cartera de
+    Nivelación</span>
 </h1>
 
-<button type="button" class="mx-16 text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-9" onclick="window.location='{% url 'ver_inicio' %}';">Volver</button>
+<div class="flex mx-16 justify-between">
+  <button type="button"
+    class=" text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-4"
+    onclick="window.location='{% url 'ver_inicio' %}';">Volver</button>
+  <button type="button"
+    class=" text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-4"
+    onclick="window.location='{% url 'add_cartera' pk=cartera.pk %}';">Añadir Puntos</button>
+</div>
 
 <div class="mx-16 relative overflow-x-auto shadow-md sm:rounded-lg bg-opacity-90 bg-white dark:bg-gray-800">
   <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -50,7 +67,8 @@
     </thead>
     <tbody>
       {% for punto in cartera.puntos_set.all %}
-      <tr class="bg-white border-b hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700" data-id="{{ cartera.pk }}">
+      <tr class="bg-white border-b hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+        data-id="{{ punto.pk }}">
         <td class="px-6 py-4">{{ punto.tipo_punto.nombre }} </td>
         <td class="px-6 py-4">{{ punto.punto }}</td>
         <td class="px-6 py-4">{{ punto.altura_instrumental }}</td>
@@ -59,13 +77,15 @@
         <td class="px-6 py-4">{{ punto.cota }}</td>
         <td class="px-6 py-4 flex justify-center space-x-2">
           <button class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition"
-          onclick="window.location='{% url 'editar_cartera_template' pk=punto.pk %}';">
+            onclick="window.location='{% url 'editar_cartera_template' pk=punto.pk %}';">
             <i class="fas fa-edit"></i> Editar
           </button>
+          {% if punto.tipo_punto.id != 1 %}
           <button class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
             onclick="openDeleteModal('{{ punto.pk }}')">
             <i class="fas fa-trash-alt"></i> Eliminar
           </button>
+          {% endif %}
         </td>
       </tr>
       {% empty %}
@@ -81,19 +101,19 @@
   let deleteUrl = "";
 
   function openDeleteModal(pk) {
-    deleteUrl = "{% url 'eliminar_cartera' pk=0 %}".replace(0, pk);
+    deleteUrl = "{% url 'eliminar_punto' pk=0 %}".replace(0, pk);
     document.getElementById("confirmDeleteModal").classList.remove("hidden");
     document.getElementById("confirmDeleteButton").setAttribute("data-pk", pk);
   }
-  
+
   function closeModal() {
     document.getElementById("confirmDeleteModal").classList.add("hidden");
   }
-  
+
   function closeToast() {
     document.getElementById("toast-success").classList.add("hidden");
   }
-  
+
   document.getElementById("confirmDeleteButton").addEventListener("click", function () {
     const pk = this.getAttribute("data-pk");
     fetch(deleteUrl, {
@@ -103,26 +123,44 @@
         "Content-Type": "application/json",
       },
     })
-      .then((response) => {
-        if (response.ok) {
-          // Eliminar fila de la tabla
+      .then(response => response.json()) // Parseamos el JSON de la respuesta
+      .then(data => {
+        const toast = document.getElementById("toast-success");
+        const deleteResultMessage = document.querySelector('.delete-result-message');
+
+        if (data.success) {
+
           const row = document.querySelector(`tr[data-id='${pk}']`);
           if (row) row.remove();
-  
-          // Mostrar el toast de éxito
-          const toast = document.getElementById("toast-success");
+
+          deleteResultMessage.textContent = "Se ha eliminado el punto satisfactoriamente.";
           toast.classList.remove("hidden");
-  
+
           // Cerrar el modal automáticamente
           closeModal();
-  
+
           // Ocultar el toast después de 3 segundos
           setTimeout(closeToast, 3000);
         } else {
-          console.error("Error al eliminar el registro:", response.status);
+          deleteResultMessage.textContent = data.message || "Ocurrió un error al eliminar el punto.";
+          toast.classList.add("bg-red-500"); // Cambia el color a rojo si es un error
+          toast.classList.remove("hidden");
+
+          // Ocultar el toast después de 3 segundos
+          setTimeout(closeToast, 3000);
         }
       })
-      .catch((error) => console.error("Error al eliminar el registro:", error));
-  });  
+      .catch(error => {
+        closeModal();
+        const deleteResultMessage = document.querySelector('.delete-result-message');
+        deleteResultMessage.textContent = "Ocurrió un error inesperado.";
+
+        const toast = document.getElementById("toast-success");
+        toast.classList.add("bg-red-500"); // Cambia el color a rojo si es un error
+        toast.classList.remove("hidden");
+
+        setTimeout(closeToast, 3000);
+      });
+  });
 </script>
 {% endblock %}
