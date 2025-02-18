@@ -200,33 +200,34 @@ const renderNuevaFilaPunto = function () {
 
     cuerpoTablaPuntosCartera.appendChild(nuevaFilaPunto);
     seleccionarTodosLosInputsFila(nuevaFilaPunto);
-    registrandoInputAlturaInstrumental.readOnly = true;
-    registrandoInputCota.readOnly = true;
+    inhabilitarInput(registrandoInputAlturaInstrumental);
+    inhabilitarInput(registrandoInputCota);
+
+    habilitarInput(registrandoInputPunto);
+    habilitarInput(registrandoInputTipoPunto);
+    registrandoInputPunto.value = '';
     habilitarCamposRegistrandoDelta();
     registrandoInputTipoPunto.onchange = (event) => registrandoInputTipoPuntoHandleChange(event);
 }
 
 const habilitarCamposRegistrandoDelta = function () {
-    registrandoInputVistaMas.readOnly = true;
-    registrandoInputVistaMenos.readOnly = false;
-    registrandoInputVistaMas.classList.add('cursor-not-allowed', 'opacity-50');
+    habilitarInput(registrandoInputVistaMenos);
+    inhabilitarInput(registrandoInputVistaMas);
 
 }
 
 const habilitarCamposRegistrandoCambio = function () {
-    registrandoInputVistaMas.readOnly = false;
-    registrandoInputVistaMenos.readOnly = false;
-    registrandoInputVistaMas.classList.remove('cursor-not-allowed', 'opacity-50');
+    habilitarInput(registrandoInputVistaMas)
+    habilitarInput(registrandoInputVistaMenos)
 }
 
 const inhabilitarInputsPuntoRegistrado = function () {
-    registrandoInputTipoPunto.readOnly = true;
-    registrandoInputPunto.readOnly = true;
-    registrandoInputAlturaInstrumental.readOnly = true;
-    registrandoInputVistaMas.readOnly = true;
-    registrandoInputVistaMenos.readOnly = true;
-    registrandoInputCota.readOnly = true;
-
+    inhabilitarInput(registrandoInputTipoPunto);
+    inhabilitarInput(registrandoInputPunto);
+    inhabilitarInput(registrandoInputAlturaInstrumental);
+    inhabilitarInput(registrandoInputVistaMas);
+    inhabilitarInput(registrandoInputVistaMenos);
+    inhabilitarInput(registrandoInputCota);
     registrandoInputTipoPunto.onchange = null;
 }
 
@@ -269,3 +270,12 @@ document.addEventListener('DOMContentLoaded', function () {
     botonGuardarPunto.onclick = (event) => botonGuardarPuntoHandleClick(event);
 });
 
+const inhabilitarInput = function (input) {
+    input.classList.add('cursor-not-allowed', 'opacity-50');
+    input.readOnly = true;
+}
+
+const habilitarInput = function (input) {
+    input.classList.remove('cursor-not-allowed', 'opacity-50');
+    input.readOnly = false;
+}
