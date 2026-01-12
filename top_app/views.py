@@ -30,17 +30,17 @@ def login_view(request):
     else:
         return render(request, 'layouts/partials/login.html', {})
 
-#@login_required
+@login_required
 def index(request):
     return render(request, 'layouts/index.html', {})
 
-#@login_required
+@login_required
 def ver_inicio(request):
     basicas = InformacionBasica.objects.all()
     return render(request, 'ver_inicio.html',  {'basicas': basicas})
 
 #CREATE BASICA:
-#@login_required
+@login_required
 def add_basica(request):
     if request.method == 'POST':
         form = InformacionBasicaForm(request.POST)
@@ -57,13 +57,13 @@ def add_basica(request):
 
   
 #READ BASICA:
-#@login_required
+@login_required
 def ver_basica(request):
     basicas = InformacionBasica.objects.all()
     return render(request, 'ver_basica.html', {'basicas': basicas})
 
 #UPDATE BASICA:
-#@login_required
+@login_required
 def editar_basica(request, pk):
     basica = get_object_or_404(InformacionBasica, pk=pk)
     if request.method == "POST":
@@ -76,7 +76,7 @@ def editar_basica(request, pk):
     return render(request, 'forms/editar_basica.html', {'form': form})
 
 #DELETE BASICA:
-#@login_required
+@login_required
 def eliminar_basica(request, pk):
     if request.method == "POST":
         basica = get_object_or_404(InformacionBasica, pk=pk)
@@ -85,7 +85,7 @@ def eliminar_basica(request, pk):
     return redirect('historial_carteras')
 
 #CREATE CARTERA:
-#@login_required
+@login_required
 def add_cartera(request, pk):
     # Obtener el objeto de la cartera básica (InformacionBasica) relacionado
     basica = get_object_or_404(InformacionBasica, pk=pk)
@@ -348,7 +348,7 @@ def guardar_punto_cambio(request, cartera_id):
     return JsonResponse({"success": False, "message": "Método no permitido"}, status=405)
 
 #READ CARTERA:
-#@login_required
+@login_required
 def ver_cartera(request, pk):
     cartera = CarteraNivelacion.objects.get(basica_id=pk)
 
@@ -356,7 +356,7 @@ def ver_cartera(request, pk):
     return render(request, 'ver_cartera.html', {'cartera': cartera, 'basica': basica})
 
 #UPDATE CARTERA:
-#@login_required
+@login_required
 def editar_cartera_template(request, pk):
     # Asegúrate de obtener el objeto correctamente
     punto = get_object_or_404(Puntos, pk=pk)
@@ -580,7 +580,7 @@ def editar_punto(request, punto_id):
     return JsonResponse({"success": False, "message": "Método no permitido"}, status=405)
 
 #DELETE CARTERA:
-#@login_required
+@login_required
 def eliminar_punto(request, pk):
     if request.method == 'POST':  # Verifica que sea una solicitud POST
 
@@ -643,7 +643,7 @@ def eliminar_punto(request, pk):
     return JsonResponse({'error': 'Método no permitido'}, status=405)  # Si no es POST, responde con error
 
 #LOGOUT:
-#@login_required
+@login_required
 def logout_session(request):
     logout(request)
     return redirect('login')
