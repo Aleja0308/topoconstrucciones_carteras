@@ -27,36 +27,36 @@
   </button>
 
   <!-- Formulario de edición -->
-  <div class="mx-16 relative overflow-x-auto shadow-md sm:rounded-lg bg-opacity-90 bg-white dark:bg-gray-800 p-6">
-    <h2 class="text-xl font-semibold mb-4">Formulario de Edición</h2>
-    <form action="" method="post">
-      {% csrf_token %}
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {% for field in form %}
-        <div>
-          <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
-            {{ field.label }}
-          </label>
-          {{ field }}
-          {% if field.errors %}
-          <p class="text-red-500 text-sm">{{ field.errors.0 }}</p>
-          {% endif %}
-        </div>
-        {% endfor %}
+<div class="mx-16 relative overflow-x-auto shadow-md sm:rounded-lg bg-opacity-90 bg-white dark:bg-gray-800 p-6">
+  <h2 class="text-xl font-semibold mb-4">Formulario de Edición</h2>
+  <form action="" method="post">
+    {% csrf_token %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {% for field in form %}
+      <div {% if field.name == 'altura_instrumental' and punto.tipo_punto.nombre == 'Delta' %}style="display: none;"{% endif %}>
+        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
+          {{ field.label }}
+        </label>
+        {{ field }}
+        {% if field.errors %}
+        <p class="text-red-500 text-sm">{{ field.errors.0 }}</p>
+        {% endif %}
       </div>
-      <div class="flex justify-end mt-6 space-x-4">
-        <button type="submit" class="boton-editar-punto bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition">
-          Guardar cambios
-        </button>
-        <button type="button" class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition"
-          onclick="window.location='{% url 'ver_cartera' pk=punto.cartera_nivelacion.pk %}';">
-          Cancelar
-        </button>
-      </div>
-      <span class="editar-punto-resultado text-red-500 font-bold"></span>
-      <input type="hidden" value="{{ punto.cartera_nivelacion.pk }}" id="id_cartera_nivelacion">
-    </form>
-  </div>
+      {% endfor %}
+    </div>
+    <div class="flex justify-end mt-6 space-x-4">
+      <button type="submit" class="boton-editar-punto bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition">
+        Guardar cambios
+      </button>
+      <button type="button" class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition"
+        onclick="window.location='{% url 'ver_cartera' pk=punto.cartera_nivelacion.pk %}';">
+        Cancelar
+      </button>
+    </div>
+    <span class="editar-punto-resultado text-red-500 font-bold"></span>
+    <input type="hidden" value="{{ punto.cartera_nivelacion.pk }}" id="id_cartera_nivelacion">
+  </form>
+</div>
 
   <!-- Tabla del registro editable -->
   <div class="mx-16 relative overflow-x-auto shadow-md sm:rounded-lg bg-opacity-90 bg-white dark:bg-gray-800 mt-10">

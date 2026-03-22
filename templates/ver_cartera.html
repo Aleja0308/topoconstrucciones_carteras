@@ -54,7 +54,7 @@
 
 <div class="mx-16 relative overflow-x-auto shadow-md sm:rounded-lg bg-opacity-90 bg-white dark:bg-gray-800">
   <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-    <thead class="text-xs text-white uppercase bg-amber-500 dark:bg-amber-700">
+    <thead class="text-xs text-white uppercase bg-gray-500 dark:bg-gray-700">
       <tr>
         <th scope="col" class="px-6 py-3">Tipo Punto</th>
         <th scope="col" class="px-6 py-3">Punto</th>
@@ -71,9 +71,15 @@
         data-id="{{ punto.pk }}">
         <td class="px-6 py-4">{{ punto.tipo_punto.nombre }} </td>
         <td class="px-6 py-4">{{ punto.punto }}</td>
-        <td class="px-6 py-4">{{ punto.altura_instrumental }}</td>
-        <td class="px-6 py-4">{{ punto.vista_mas }}</td>
-        <td class="px-6 py-4">{{ punto.vista_menos }}</td>
+        <td class="px-6 py-4">
+          {% if punto.tipo_punto.nombre != 'Delta' %}
+            {{ punto.altura_instrumental }}
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td class="px-6 py-4">{{ punto.vista_mas|default:"-" }}</td>
+        <td class="px-6 py-4">{{ punto.vista_menos|default:"-" }}</td>
         <td class="px-6 py-4">{{ punto.cota }}</td>
         <td class="px-6 py-4 flex justify-center space-x-2">
           <button class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition"

@@ -66,7 +66,7 @@ DATABASES = {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'topo_cartera',
             'USER': 'root',
-            'PASSWORD': 'aleja2001',
+            'PASSWORD': 'aleja123',
             'HOST': 'localhost',
             'PORT': '3306',
         }
@@ -121,4 +121,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGOUT_REDIRECT_URL = 'logout_session'
 LOGIN_REDIRECT_URL = 'index'
-LOGIN_URL = 'login_view'
+LOGIN_URL = 'login'
